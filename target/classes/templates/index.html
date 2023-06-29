@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+    <title>TOKPHONE STORE </title>
+    <meta content="" name="description"/>
+    <meta content="" name="keywords"/>
+
+    <!-- Favicons -->
+    <link th:href="@{/assets3/img/favicon.png}" rel="icon"/>
+    <link th:href="@{assets3/img/apple-touch-icon.png}" rel="apple-touch-icon"/>
+
+    <!-- Google Fonts -->
+    <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700"
+            rel="stylesheet"/>
+
+    <!-- Vendor CSS Files -->
+    <link href="/assets3/vendor/aos/aos.css" rel="stylesheet"/>
+    <link href="/assets3/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/assets3/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="/assets3/vendor/glightbox/css/glightbox.min.css" rel="stylesheet"/>
+    <link href="/assets3/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"/>
+
+    <!-- Template Main CSS File -->
+    <link href="/assets3/css/style.css" rel="stylesheet"/>
+
+    <!-- =======================================================
+  * Template Name: NewBiz
+  * Updated: May 30 2023 with Bootstrap v5.3.0
+  * Template URL: https://bootstrapmade.com/newbiz-bootstrap-business-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container d-flex justify-content-between">
+        <div class="logo">
+            <!-- Uncomment below if you prefer to use an text logo -->
+            <!-- <h1><a href="index.html">NewBiz</a></h1> -->
+            <a th:href="@{/}"><img src="/assets3/img/logo.png" alt=""
+                                   class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+        </div>
+
+        <nav id="navbar" class="navbar navbar-expand-md">
+            <ul class="">
+                <li><a class="nav-link scrollto active " href="#hero">Home</a></li>
+                <li><a class="nav-link scrollto" href="#about">About</a></li>
+                <li class="dropdown">
+                    <a href="#"
+                    ><span>Shop</span> <i class="bi bi-chevron-down"></i
+                    ></a>
+                    <ul>
+                        <li><a th:href="@{/pages/newproduct}">New Product</a></li>
+                        <li><a th:href="@{/pages/popularitem}">Popular Item</a></li>
+                        <li><a th:href="@{/pages/allproduct}">All Product</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div>
+                <a th:href="@{/login}" class="btn-get-started scrollto">Login</a>
+            </div>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+        <!-- .navbar -->
+    </div>
+</header>
+<!-- #header -->
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" class="clearfix">
+    <div class="container" data-aos="fade-up">
+        <div class="hero-img" data-aos="zoom-out" data-aos-delay="200">
+            <img src="/assets3/img/hero-img.svg" alt="" class="img-fluid"/>
+        </div>
+
+        <div class="hero-info" data-aos="zoom-in" data-aos-delay="100">
+            <h2>
+                Empowering<br/><span>Your</span><br/>Tech Journey!
+            </h2>
+            <div>
+                <a th:href="@{/login}" class="btn-get-started scrollto">Login</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero Section -->
+
+<main id="main">
+    <!-- ======= About Section ======= -->
+    <section id="about">
+        <div class="container" data-aos="fade-up">
+            <header class="section-header">
+                <h3>About Us</h3>
+                <p>
+                    Kami di TokPhone memiliki komitmen yang kuat untuk memberikan pengalaman berbelanja
+                    online terbaik dalam industri teknologi.
+                </p>
+            </header>
+
+            <div class="row about-container">
+                <div class="col-lg-6 content order-lg-1 order-2">
+                    <p>
+                        Kami menghargai privasi dan keamanan informasi pelanggan kami.
+                        Kami menjalankan prosedur keamanan yang ketat untuk melindungi
+                        data pribadi Anda dan melaksanakan transaksi online dengan aman. Maka dari
+                        itu Kami melakukan TQS sebagai berikut.
+                    </p>
+
+                    <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+                        <div class="icon"><i class="bi bi-card-checklist"></i></div>
+                        <h4 class="title"><a href="">Time</a></h4>
+                        <p class="description">
+                            Kami percaya bahwa waktu adalah hal berharga, oleh karena itu, kami menyediakan
+                            platform yang memudahkan Anda untuk menemukan dan membeli produk ponsel
+                            dan gadget yang Anda butuhkan. Dengan antarmuka pengguna yang intuitif dan fitur
+                            pencarian yang canggih, Anda dapat menemukan produk yang Anda inginkan
+                            dengan cepat dan efisien.
+                        </p>
+                    </div>
+
+                    <div class="icon-box" data-aos="fade-up" data-aos-delay="200">
+                        <div class="icon"><i class="bi bi-brightness-high"></i></div>
+                        <h4 class="title"><a href="">Quality</a></h4>
+                        <p class="description">
+                            Kualitas adalah prinsip yang kami junjung tinggi. Kami bekerja sama dengan merek-
+                            merek terkenal dan distributor resmi untuk menyediakan produk-produk ponsel
+                            cerdas dan aksesori berkualitas tinggi. Kami berkomitmen untuk memberikan
+                            kepada pelanggan kami produk-produk yang tahan lama, inovatif, dan memenuhi
+                            standar kualitas yang ketat.
+                        </p>
+                    </div>
+
+                    <div class="icon-box" data-aos="fade-up" data-aos-delay="300">
+                        <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+                        <h4 class="title"><a href="">Satisfaction</a></h4>
+                        <p class="description">
+                            Kepuasan pelanggan adalah prioritas utama kami. Tim layanan pelanggan kami
+                            tersedia untuk membantu Anda dengan setiap pertanyaan, permintaan, atau
+                            masalah yang Anda miliki. Kami berusaha untuk memberikan pengalaman
+                            berbelanja yang menyenangkan dan mudah bagi setiap pelanggan kami. Keamanan
+                            transaksi online dan perlindungan data pribadi Anda juga menjadi perhatian utama
+                            kami.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6 background order-lg-2" data-aos="zoom-in">
+                    <img src="/assets3/img/about-img.svg" class="img-fluid" alt=""/>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- End About Section -->
+
+    <!-- Section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <header class="section-header">
+                <h3>Top Selling</h3>
+            </header>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div class="col mb-5"
+                     th:each="item : ${listItem}"
+                     th:value="${item.id}">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
+                             height="300"/>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
+                                <!-- Product price-->
+                                <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
+                                <!-- Total Sold -->
+                                <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{/login}">Add to Cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 footer-info">
+                    <h3>TOKPHONE</h3>
+                    <p>
+                        Selamat datang di TokPhone, platform marketplace terdepan untuk semua kebutuhan ponsel dan gadget Anda! Kami adalah sebuah tim yang berdedikasi untuk menyediakan pengalaman berbelanja online yang terbaik dalam industri teknologi, dengan fokus utama pada produk-produk berkualitas tinggi dan layanan pelanggan yang unggul.
+                    </p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"
+                    ><i class="bi bi-instagram"></i
+                    ></a>
+                    <a href="#" class="instagram"
+                    ><i class="bi bi-instagram"></i
+                    ></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="container">
+        <div class="copyright">
+            &copy; Copyright <strong>TOKPHONE</strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            <!--
+          All the links in the footer should remain intact.
+          You can delete the links only if you purchased the pro version.
+          Licensing information: https://bootstrapmade.com/license/
+          Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=NewBiz
+        -->
+        </div>
+    </div>
+</footer>
+<!-- End Footer -->
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+</a>
+
+<!-- Vendor JS Files -->
+<script src="/assets3/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/assets3/vendor/aos/aos.js"></script>
+<script src="/assets3/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets3/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/assets3/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/assets3/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/assets3/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="/assets3/js/main.js"></script>
+</body>
+</html>
