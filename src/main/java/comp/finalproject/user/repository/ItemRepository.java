@@ -17,4 +17,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop8ByTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
     List<Item> findTop4ByTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
 
+    List<Item> findByDeletedFalseOrderByCreatedAtDesc();
+
 }
