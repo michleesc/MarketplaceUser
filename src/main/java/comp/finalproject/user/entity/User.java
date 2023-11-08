@@ -1,6 +1,7 @@
 package comp.finalproject.user.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class User implements Serializable
     private String name;
 
     @Column(nullable=false, unique=true)
+    @Email
     private String email;
 
     @Column(nullable=false)

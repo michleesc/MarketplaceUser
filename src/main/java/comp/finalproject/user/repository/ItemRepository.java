@@ -8,6 +8,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAll();
+    List<Item> findByNameContaining(String keyword);
 
     Item findById(long id);
 

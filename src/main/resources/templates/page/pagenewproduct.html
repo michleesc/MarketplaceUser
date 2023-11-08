@@ -14,7 +14,8 @@
     <link href="/assets3/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="/assets3/vendor/aos/aos.css" rel="stylesheet">
@@ -44,10 +45,16 @@
         <div class="logo">
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
-            <a href="index.html"><img src="/assets3/img/logo.png" alt="" class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+            <a href="index.html"><img src="/assets3/img/logo.png" alt=""
+                                      class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
         </div>
 
         <nav id="navbar" class="navbar">
+            <form th:action="@{/pages}" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+
             <ul>
                 <li><a class="nav-link scrollto " href="#header">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
@@ -58,7 +65,8 @@
                         <li><a th:href="@{/pages/allproduct}">All Product</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i class="bi bi-chevron-down"></i></a>
+                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i
+                        class="bi bi-chevron-down"></i></a>
                     <ul>
                         <li><a th:href="@{/pages/sales}">Transaction</a></li>
                         <li><a th:href="@{/logout}">Logout</a></li>
@@ -170,7 +178,8 @@
 </footer>
 <!-- End Footer -->
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="/assets3/vendor/purecounter/purecounter_vanilla.js"></script>

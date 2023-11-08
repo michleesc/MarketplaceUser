@@ -136,4 +136,21 @@ public class PageController {
             return "redirect:/pages/sales";
         }
     }
+
+    @GetMapping("/pages")
+    public String listProducts(Model model, @RequestParam(name = "keyword", required = false) String keyword, Principal principal) {
+        List<Item> items;
+        String email = principal.getName();
+        User currentUser = userRepository.findByEmail(email);
+        // Menyimpan pengguna yang sedang login dalam model
+        model.addAttribute("currentUser", currentUser);
+
+        if (keyword != null) {
+            items = itemRepository.findByNameContaining(keyword);
+        } else {
+            items = itemRepository.findAll();
+        }
+        model.addAttribute("listItem", items);
+        return "page/list";
+    }
 }

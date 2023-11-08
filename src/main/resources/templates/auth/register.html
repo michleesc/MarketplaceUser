@@ -16,7 +16,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -74,34 +75,49 @@
                                         <label class="form-label">First Name</label>
                                         <input type="text" name="firstName" class="form-control" id="yourFirstName"
                                                placeholder="Enter first name" th:field="*{firstName}" required>
-                                        <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
+                                        <p th:errors="*{firstName}" class="text-danger"
+                                           th:if="${#fields.hasErrors('firstName')}"></p>
+                                        <div class="invalid-feedback">Please enter your first name!</div>
                                     </div>
+
 
                                     <div class="col-12">
                                         <label class="form-label">Last Name</label>
                                         <input type="text" name="lastName" class="form-control" id="yourLastName"
                                                placeholder="Enter last name" th:field="*{lastName}" required>
-                                        <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
+                                        <p th:errors="*{lastName}" class="text-danger"
+                                           th:if="${#fields.hasErrors('lastName')}"></p>
+                                        <div class="invalid-feedback">Please enter your last name!</div>
                                     </div>
+
 
                                     <div class="col-12">
                                         <label for="yourEmail" class="form-label">Email</label>
                                         <input type="email" name="email" class="form-control" id="yourEmail"
-                                               placeholder="Enter email address" th:field="*{email}" required>
-                                        <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}"></p>
+                                               placeholder="Enter email address" th:field="*{email}"
+                                               required>
+                                        <p th:errors="*{email}" class="text-danger"
+                                           th:if="${#fields.hasErrors('email')}"></p>
+                                        <div class="invalid-feedback">Please enter your email!</div>
                                     </div>
+
 
                                     <div class="col-12">
                                         <label for="yourPassword" class="form-label">Password</label>
                                         <input type="password" name="password" class="form-control" id="yourPassword"
                                                placeholder="Enter password" th:field="*{password}" required>
-                                        <p th:errors="*{password}" class="text-danger" th:if="${#fields.hasErrors('password')}"></p>
+                                        <p th:errors="*{password}" class="text-danger"
+                                           th:if="${#fields.hasErrors('password')}"></p>
+                                        <div class="invalid-feedback">Please enter your password!</div>
                                     </div>
+
 
                                     <div class="col-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required>
-                                            <label class="form-check-label" for="acceptTerms">I agree and accept the <a href="#">terms and conditions</a></label>
+                                            <input class="form-check-input" name="terms" type="checkbox" value=""
+                                                   id="acceptTerms" required>
+                                            <label class="form-check-label" for="acceptTerms">I agree and accept the <a
+                                                    href="#">terms and conditions</a></label>
                                             <div class="invalid-feedback">You must agree before submitting.</div>
                                         </div>
                                     </div>
@@ -109,7 +125,8 @@
                                         <button class="btn btn-primary w-100" type="submit">Create Account</button>
                                     </div>
                                     <div class="col-12">
-                                        <p class="small mb-0">Already have an account? <a th:href="@{/login}">Log in</a></p>
+                                        <p class="small mb-0">Already have an account? <a th:href="@{/login}">Log in</a>
+                                        </p>
                                     </div>
                                 </form>
 
@@ -132,7 +149,8 @@
     </div>
 </main><!-- End #main -->
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="/assets/vendor/apexcharts/apexcharts.min.js"></script>
