@@ -1,8 +1,7 @@
-package comp.finalproject.user.controller;
+package comp.finalproject.user.controller.web;
 
 import comp.finalproject.user.dto.UserDto;
 import comp.finalproject.user.entity.Item;
-import comp.finalproject.user.entity.Sale;
 import comp.finalproject.user.entity.User;
 import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
@@ -15,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -87,6 +85,4 @@ public class AuthController {
         model.addAttribute("users", users);
         return "users";
     }*/
-
-
 }

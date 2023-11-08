@@ -1,4 +1,4 @@
-package comp.finalproject.user.controller;
+package comp.finalproject.user.controller.web;
 
 import comp.finalproject.user.entity.Item;
 import comp.finalproject.user.entity.Sale;
