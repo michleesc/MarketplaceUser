@@ -14,7 +14,8 @@
     <link href="/assets3/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="/assets3/vendor/aos/aos.css" rel="stylesheet">
@@ -44,12 +45,18 @@
         <div class="logo">
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
-            <a href="index.html"><img src="/assets3/img/logo.png" alt="" class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+            <a href="index.html"><img src="/assets3/img/logo.png" alt=""
+                                      class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
         </div>
 
         <nav id="navbar" class="navbar">
+            <form th:action="@{/pages}" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search Item">
+                <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
+                                                                                    style="color:#0b4a8e;"></i></button>
+            </form>
             <ul>
-                <li><a class="nav-link scrollto " href="#header">Home</a></li>
+                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
                 <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
                     <ul>
@@ -58,7 +65,8 @@
                         <li><a th:href="@{/pages/allproduct}">All Product</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i class="bi bi-chevron-down"></i></a>
+                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i
+                        class="bi bi-chevron-down"></i></a>
                     <ul>
                         <li><a th:href="@{/pages/sales}">Transaction</a></li>
                         <li><a th:href="@{/logout}">Logout</a></li>
@@ -87,89 +95,89 @@
         </div>
     </section><!-- End Breadcrumbs Section -->
 
-<!-- Product section-->
-<form action="/purchase" method="post">
-    <section class="py-5" th:each="item : ${item}">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="row gx-4 gx-lg-5 align-items-center">
-                <div class="col-md-6">
-                    <img
-                            class="card-img-top mb-5 mb-md-0"
-                            th:src="${item.imagePath}"
-                            alt="..."
-                            style="width: 600px; height: 700px;"
-                    />
-                </div>
-                <div class="col-md-6">
-                    <div class="small mb-1" th:text="*{item.type}">Type</div>
-                    <h1 class="display-5 fw-bolder" th:text="*{item.name}">
-                        Shop item template
-                    </h1>
-                    <div class="fs-5 mb-5">
-                        <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span>
-                    </div>
-                    <p class="lead" th:text="${item.description}">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Praesentium at dolorem quidem modi. Nam sequi consequatur
-                        obcaecati excepturi alias magni, accusamus eius blanditiis
-                        delectus ipsam minima ea iste laborum vero?
-                    </p>
-                    <div class="d-flex">
-                        <input
-                                class="form-control text-center me-3"
-                                type="number"
-                                style="max-width: 3rem"
-                                name="quantity"
-                                step="1"
-                                value="1"
+    <!-- Product section-->
+    <form action="/purchase" method="post">
+        <section class="py-5" th:each="item : ${item}">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6">
+                        <img
+                                class="card-img-top mb-5 mb-md-0"
+                                th:src="${item.imagePath}"
+                                alt="..."
+                                style="width: 600px; height: 700px;"
                         />
-                        <input type="hidden" name="itemId" th:value="${item.id}"/>
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Buy
-                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="small mb-1" th:text="*{item.type}">Type</div>
+                        <h1 class="display-5 fw-bolder" th:text="*{item.name}">
+                            Shop item template
+                        </h1>
+                        <div class="fs-5 mb-5">
+                            <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span>
+                        </div>
+                        <p class="lead" th:text="${item.description}">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Praesentium at dolorem quidem modi. Nam sequi consequatur
+                            obcaecati excepturi alias magni, accusamus eius blanditiis
+                            delectus ipsam minima ea iste laborum vero?
+                        </p>
+                        <div class="d-flex">
+                            <input
+                                    class="form-control text-center me-3"
+                                    type="number"
+                                    style="max-width: 3rem"
+                                    name="quantity"
+                                    step="1"
+                                    value="1"
+                            />
+                            <input type="hidden" name="itemId" th:value="${item.id}"/>
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+    <!-- Section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">New Products</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div class="col mb-5"
+                     th:each="item : ${listItem}"
+                     th:value="${item.id}">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
+                             height="300"/>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
+                                <!-- Product price-->
+                                <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
+                                <!-- Total Sold -->
+                                <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <form th:action="@{/buyItem/{itemId}(itemId=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-dark mt-auto">Buy Item</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-</form>
-<!-- Section-->
-<section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">New Products</h2>
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-5"
-                 th:each="item : ${listItem}"
-                 th:value="${item.id}">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
-                         height="300"/>
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
-                            <!-- Product price-->
-                            <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
-                            <!-- Total Sold -->
-                            <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center">
-                            <form th:action="@{/buyItem/{itemId}(itemId=${item.id})}" method="post">
-                                <button type="submit" class="btn btn-outline-dark mt-auto">Buy Item</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 </main>
 <!-- ======= Footer ======= -->
 <footer id="footer">
@@ -216,7 +224,8 @@
 </footer>
 <!-- End Footer -->
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="assets3/vendor/purecounter/purecounter_vanilla.js"></script>

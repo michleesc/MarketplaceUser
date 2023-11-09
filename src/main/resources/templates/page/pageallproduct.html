@@ -48,8 +48,13 @@
         </div>
 
         <nav id="navbar" class="navbar">
+            <form th:action="@{/pages}" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search Item">
+                <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
+                                                                                    style="color:#0b4a8e;"></i></button>
+            </form>
             <ul>
-                <li><a class="nav-link scrollto " href="#header">Home</a></li>
+                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
                 <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
                     <ul>

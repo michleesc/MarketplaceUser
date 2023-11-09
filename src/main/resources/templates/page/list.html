@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title th:if="${param.keyword} != null" th:text="${param.keyword} + ' - TOKPHONE STORE'" th:unless="${param.keyword == null}">Your Default Page Title</title>
+    <title th:if="${param.keyword} != null" th:text="${param.keyword} + ' - TOKPHONE STORE'"
+           th:unless="${param.keyword == null}">Your Default Page Title</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -41,22 +42,23 @@
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top d-flex align-items-center">
     <div class="container d-flex justify-content-between">
-
         <div class="logo">
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
-            <a href="index.html"><img src="/assets3/img/logo.png" alt=""
-                                      class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+            <a href=""><img src="/assets3/img/logo.png" alt=""
+                            class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
         </div>
 
         <nav id="navbar" class="navbar">
             <form th:action="@{/pages}" method="get" class="d-flex">
-                <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <input class="form-control me-2" type="search" name="keyword" th:value="${param.keyword}"
+                       placeholder="Search Item">
+                <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
+                                                                                    style="color:#0b4a8e;"></i></button>
             </form>
 
             <ul>
-                <li><a class="nav-link scrollto " href="#header">Home</a></li>
+                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
                 <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
                     <ul>
@@ -86,10 +88,10 @@
         <div class="container">
 
             <div class="d-flex justify-content-between align-items-center">
-                <h2 th:text="${param.keyword}"></h2>
+                <h2 th:text="'Search for result : ' + ${param.keyword}"></h2>
                 <ol>
                     <li><a th:href="@{/pages}">Pages</a></li>
-                    <li th:text="${param.keyword}"></li>
+                    <li> Search</li>
                 </ol>
             </div>
         </div>
@@ -126,6 +128,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listItem)}" class="mt-4">
+                    <p class="text-center">Tidak ada hasil pencarian yang cocok.</p>
                 </div>
             </div>
         </div>

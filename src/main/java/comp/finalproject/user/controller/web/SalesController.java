@@ -62,6 +62,25 @@ public class SalesController {
         return "redirect:/pages/sales";
     }
 
+    @GetMapping("/pages/searchsales")
+    public String searchSalesByItemName(Model model, @RequestParam(name = "keyword", required = false) String itemName, Principal principal) {
+        List<Sale> sales;
+        String email = principal.getName();
+        User currentUser = userRepository.findByEmail(email);
+        model.addAttribute("currentUser", currentUser);
+        if (itemName != null && !itemName.isEmpty()) {
+            // Lakukan pencarian berdasarkan nama barang
+            sales = salesRepository.findByUser_IdAndItem_NameContaining(currentUser.getId(), itemName);
+
+        } else {
+            // Tampilkan semua penjualan jika tidak ada kata kunci pencarian
+            sales = salesRepository.findAll();
+        }
+        model.addAttribute("userSales", sales); // Menambahkan hasil pencarian ke model
+        return "sale/listsales"; // Nama tampilan Thymeleaf yang akan ditampilkan
+    }
+
+
     /*@RequestMapping("/newsales")
     public String showNewForm(Model model) {
         Sale sale = new Sale();
@@ -95,4 +114,6 @@ public class SalesController {
 
         return "redirect:/sales";
     }*/
+
+
 }

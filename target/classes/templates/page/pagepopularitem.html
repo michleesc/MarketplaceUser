@@ -2,175 +2,184 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>New Product - TOKPHONE STORE </title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+    <title>New Product - TOKPHONE STORE </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-  <!-- Favicons -->
-  <link href="/assets3/img/favicon.png" rel="icon">
-  <link href="/assets3/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <!-- Favicons -->
+    <link href="/assets3/img/favicon.png" rel="icon">
+    <link href="/assets3/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700"
+          rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
-  <link href="/assets3/vendor/aos/aos.css" rel="stylesheet">
-  <link href="/assets3/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/assets3/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="/assets3/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="/assets3/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="/assets3/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/assets3/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets3/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets3/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/assets3/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-  <!-- Template Main CSS File -->
-  <link href="/assets3/css/style.css" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="/assets3/css/style.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: NewBiz
-  * Updated: May 30 2023 with Bootstrap v5.3.0
-  * Template URL: https://bootstrapmade.com/newbiz-bootstrap-business-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+    <!-- =======================================================
+    * Template Name: NewBiz
+    * Updated: May 30 2023 with Bootstrap v5.3.0
+    * Template URL: https://bootstrapmade.com/newbiz-bootstrap-business-template/
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
 </head>
 
 <body>
 
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top d-flex align-items-center">
-  <div class="container d-flex justify-content-between">
+    <div class="container d-flex justify-content-between">
 
-    <div class="logo">
-      <!-- Uncomment below if you prefer to use an text logo -->
-      <!-- <h1><a href="index.html">NewBiz</a></h1> -->
-      <a href="index.html"><img src="/assets3/img/logo.png" alt="" class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+        <div class="logo">
+            <!-- Uncomment below if you prefer to use an text logo -->
+            <!-- <h1><a href="index.html">NewBiz</a></h1> -->
+            <a href="index.html"><img src="/assets3/img/logo.png" alt=""
+                                      class="img-fluid me-3"/><span> TOKPHONE STORE </span></a>
+        </div>
+
+        <nav id="navbar" class="navbar">
+            <form th:action="@{/pages}" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search Item">
+                <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
+                                                                                    style="color:#0b4a8e;"></i></button>
+            </form>
+            <ul>
+                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
+                <li><a class="nav-link scrollto" href="#footer">About</a></li>
+                <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a th:href="@{/pages/newproduct}">New Product</a></li>
+                        <li><a th:href="@{/pages/popularitem}">Popular Item</a></li>
+                        <li><a th:href="@{/pages/allproduct}">All Product</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i
+                        class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a th:href="@{/pages/sales}">Transaction</a></li>
+                        <li><a th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
     </div>
-
-    <nav id="navbar" class="navbar">
-      <ul>
-        <li><a class="nav-link scrollto " href="#header">Home</a></li>
-        <li><a class="nav-link scrollto" href="#footer">About</a></li>
-        <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
-          <ul>
-            <li><a th:href="@{/pages/newproduct}">New Product</a></li>
-            <li><a th:href="@{/pages/popularitem}">Popular Item</a></li>
-            <li><a th:href="@{/pages/allproduct}">All Product</a></li>
-          </ul>
-        </li>
-        <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i class="bi bi-chevron-down"></i></a>
-          <ul>
-            <li><a th:href="@{/pages/sales}">Transaction</a></li>
-            <li><a th:href="@{/logout}">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-      <i class="bi bi-list mobile-nav-toggle"></i>
-    </nav><!-- .navbar -->
-
-  </div>
 </header><!-- #header -->
 
 <main id="main">
 
-  <!-- ======= Breadcrumbs Section ======= -->
-  <section class="breadcrumbs">
-    <div class="container">
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
 
-      <div class="d-flex justify-content-between align-items-center">
-        <h2>Popular Item</h2>
-        <ol>
-          <li><a th:href="@{/pages}">Pages</a></li>
-          <li>Popular Item</li>
-        </ol>
-      </div>
-    </div>
-  </section><!-- End Breadcrumbs Section -->
-
-  <!-- Section Product-->
-  <section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        <div class="col mb-5"
-             th:each="item : ${listItem}"
-             th:value="${item.id}">
-          <div class="card h-100">
-            <!-- Product image-->
-            <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
-                 height="300"/>
-            <!-- Product details-->
-            <div class="card-body p-4">
-              <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
-                <!-- Product price-->
-                <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
-                <!-- Total Sold -->
-                <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
-              </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Popular Item</h2>
+                <ol>
+                    <li><a th:href="@{/pages}">Pages</a></li>
+                    <li>Popular Item</li>
+                </ol>
             </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center">
-                <form th:action="@{/pages/buyItem/{itemId}(itemId=${item.id})}" method="post">
-                  <button type="submit" class="btn btn-outline-dark mt-auto">Buy Item</button>
-                </form>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section><!-- End Breadcrumbs Section -->
+
+    <!-- Section Product-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div class="col mb-5"
+                     th:each="item : ${listItem}"
+                     th:value="${item.id}">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
+                             height="300"/>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
+                                <!-- Product price-->
+                                <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
+                                <!-- Total Sold -->
+                                <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <form th:action="@{/pages/buyItem/{itemId}(itemId=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-dark mt-auto">Buy Item</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </main><!-- End #main -->
 
 <!-- ======= Footer ======= -->
 <footer id="footer">
-  <div class="footer-top">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 col-md-6 footer-info">
-          <h3>TOKPHONE</h3>
-          <p>
-            TOKPHONE merupakan aplikasi marketplace web dengan
-            menjual berbagai macam handphone yang ada diindonesia
-            setiap pembelian diberikan garansi resmi dari TOKPHONE
-          </p>
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 footer-info">
+                    <h3>TOKPHONE</h3>
+                    <p>
+                        TOKPHONE merupakan aplikasi marketplace web dengan
+                        menjual berbagai macam handphone yang ada diindonesia
+                        setiap pembelian diberikan garansi resmi dari TOKPHONE
+                    </p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"
+                    ><i class="bi bi-instagram"></i
+                    ></a>
+                    <a href="#" class="instagram"
+                    ><i class="bi bi-instagram"></i
+                    ></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
         </div>
-        <div class="social-links">
-          <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="instagram"
-          ><i class="bi bi-instagram"></i
-          ></a>
-          <a href="#" class="instagram"
-          ><i class="bi bi-instagram"></i
-          ></a>
-          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-        </div>
-      </div>
     </div>
-  </div>
-  </div>
+    </div>
 
-  <div class="container">
-    <div class="copyright">
-      &copy; Copyright <strong>TOKPHONE</strong>. All Rights Reserved
+    <div class="container">
+        <div class="copyright">
+            &copy; Copyright <strong>TOKPHONE</strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            <!--
+          All the links in the footer should remain intact.
+          You can delete the links only if you purchased the pro version.
+          Licensing information: https://bootstrapmade.com/license/
+          Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=NewBiz
+        -->
+        </div>
     </div>
-    <div class="credits">
-      <!--
-    All the links in the footer should remain intact.
-    You can delete the links only if you purchased the pro version.
-    Licensing information: https://bootstrapmade.com/license/
-    Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=NewBiz
-  -->
-    </div>
-  </div>
 </footer>
 <!-- End Footer -->
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="/assets3/vendor/purecounter/purecounter_vanilla.js"></script>
