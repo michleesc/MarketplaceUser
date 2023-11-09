@@ -107,6 +107,7 @@
                     status</h5>
                 <div class="card-body d-flex flex-column justify-content-between">
                     <p class="card-text" th:text="'ID : ' + ${sale.id}">ID</p>
+
                     <div class="d-flex">
                         <!-- Gambar -->
                         <img th:src="@{${sale.item.imagePath}}" alt="Gambar" class="me-3"
@@ -116,6 +117,7 @@
                             <h5 th:text="${sale.item.name}" class="card-title">Name</h5>
                             <!-- Total Item -->
                             <p th:text="${sale.quantity} + ' item'" class="card-text mb-1">Item</p>
+                            <p class="card-title" th:text="'Metode Pembayaran : ' + ${sale.metodePembayaran}"></p>
                         </div>
                     </div>
                     <p class="card-title">Total Belanja</p>
@@ -123,9 +125,70 @@
                         <!-- Total Belanja -->
                         <span th:text="'Rp. ' + ${#numbers.formatDecimal(sale.subtotal, 0, 'COMMA', 2, 'POINT')}">Total</span>
                         <!-- Batalkan Pesanan -->
-                        <a th:href="@{/pages/deletesales/__${sale.id}__}" class="btn btn-danger">Batalkan Pesanan</a>
+                        <a th:if="${sale.status != 'Success'}" th:href="@{/pages/deletesales/__${sale.id}__}"
+                           class="btn btn-danger">Batalkan Pesanan</a>
                     </p>
+                    <!-- Tambahkan input field tersembunyi untuk id_sale -->
+                    <input type="hidden" name="id_sale" th:value="${sale.id}"/>
+
+                    <!-- Periksa apakah metodePembayaran adalah 'Transfer' -->
+                    <a th:if="${sale.metodePembayaran == 'Transfer' && sale.status == 'Success'}"
+                       class="btn btn-outline-secondary mb-3 " data-bs-toggle="modal"
+                       th:data-bs-target="'#staticBackdrop-' + ${sale.id}">Melihat Bukti Transfer</a>
+
+
+                    <!-- Modal -->
+                    <div th:each="sale : ${userSales}" th:id="'staticBackdrop-' + ${sale.id}"
+                         class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                         data-bs-keyboard="false"
+                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Bukti Transfer</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img class="card-img-top" th:src="${sale.proofOfPayment}" alt="Product Image"
+                                         width="450"
+                                         height="300"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tambahkan tautan untuk mengunduh nota PDF -->
+                    <a th:if="${sale.status == 'Success'}" th:href="@{/nota/{id}(id=${sale.id})}"
+                       class="btn btn-primary" download="nota.pdf">Download Nota</a>
+
                 </div>
+                <form th:if="${sale.status != 'Success'}" novalidate
+                      method="post"
+                      th:action="@{/savepayment}"
+                      th:object="${sale}"
+                      enctype="multipart/form-data"
+                >
+                    <!-- Tambahkan input field tersembunyi untuk id_sale -->
+                    <input type="hidden" name="id_sale" th:value="${sale.id}"/>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto mb-3">
+                            <label class="col-form-label">Upload Bukti Transfer : </label>
+                        </div>
+                        <div class="col-auto mb-3">
+                            <input type="file" name="payment" class="form-control" accept="image/*"
+                                   th:value="${sale.proofOfPayment}" th:attr="data-target=${sale.proofOfPayment}"/>
+                        </div>
+                        <div class="auto mb-3">
+                            <button class="btn btn-primary form-control" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </section>
     </div>

@@ -15,7 +15,7 @@ public interface SalesRepository extends JpaRepository<Sale, Long> {
 
     List<Sale> findByUserIdOrderByIdDesc(long userId);
 
-    List<Sale> findByUser_IdAndItem_NameContaining(Long userId, String itemName);
+    List<Sale> findByUser_IdAndItem_NameContainingOrderByIdDesc(Long userId, String itemName);
 
 
     /*int deleteById(int id);

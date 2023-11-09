@@ -98,7 +98,9 @@
                                                required>
                                         <p th:errors="*{email}" class="text-danger"
                                            th:if="${#fields.hasErrors('email')}"></p>
-                                        <div class="invalid-feedback">Please enter your email!</div>
+                                        <div class="invalid-feedback">Please enter your email or invalid validation
+                                            email!
+                                        </div>
                                     </div>
 
 

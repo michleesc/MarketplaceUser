@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class PageController {
 
     // handler method to handle pages after login
     @GetMapping("/pages/newproduct")
-    public String pagesNewProduct(Model model, Principal principal){
+    public String pagesNewProduct(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
         // Menyimpan pengguna yang sedang login dalam model
@@ -47,7 +48,7 @@ public class PageController {
     }
 
     @GetMapping("/pages/allproduct")
-    public String pagesAllProduct(Model model, Principal principal){
+    public String pagesAllProduct(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
         // Menyimpan pengguna yang sedang login dalam model
@@ -61,7 +62,7 @@ public class PageController {
     }
 
     @GetMapping("/pages/popularitem")
-    public String pagesPopularItem(Model model, Principal principal){
+    public String pagesPopularItem(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
         // Menyimpan pengguna yang sedang login dalam model
@@ -73,11 +74,14 @@ public class PageController {
         model.addAttribute("listItem", listItem);
         return "page/pagepopularitem";
     }
+
     @RequestMapping("/pages/buyItem/{itemId}")
     public String buyItem(@PathVariable("itemId") long itemId, Model model, Principal principal) {
         // Mendapatkan informasi pengguna yang sedang login
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
+        List<String> statusList = Arrays.asList("Cash", "Transfer");
+        model.addAttribute("statusList", statusList);
 
         // Mendapatkan informasi barang yang akan dibeli
         Item item = itemRepository.findById(itemId);
@@ -94,7 +98,9 @@ public class PageController {
     }
 
     @PostMapping("/purchase")
-    public String purchaseItem(@RequestParam("itemId") long itemId, @RequestParam("quantity") int quantity, Principal principal, Model model) {
+    public String purchaseItem(@RequestParam("itemId") long itemId, @RequestParam("quantity") int quantity,
+                               @RequestParam("metodePembayaran") String metodePembayaran,
+                               Principal principal, Model model) {
         // Mendapatkan informasi pengguna yang sedang login
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
@@ -113,9 +119,16 @@ public class PageController {
             float subtotal = item.getAmount() * quantity;
 
             // Membuat objek Sale baru berdasarkan barang yang dibeli dan jumlah yang dipilih
+
             Sale sale = new Sale(item, quantity, subtotal, currentUser.getId());
             sale.setDate(new Date());
-            sale.setStatus("Menunggu Konfirmasi");
+            if (metodePembayaran.equals("Cash")) {
+                sale.setMetodePembayaran("Cash");
+                sale.setStatus("Success");
+            } else if (metodePembayaran.equals("Transfer")) {
+                sale.setMetodePembayaran("Transfer");
+                sale.setStatus("Menunggu");
+            }
 
             // Mengaitkan sale dengan pengguna yang sedang login
             currentUser.getSales().add(sale);

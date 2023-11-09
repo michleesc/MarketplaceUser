@@ -122,15 +122,21 @@
                             obcaecati excepturi alias magni, accusamus eius blanditiis
                             delectus ipsam minima ea iste laborum vero?
                         </p>
+                        <p class="lead" th:text="'Stok : ' + ${item.quantity}"></p>
+
                         <div class="d-flex">
                             <input
                                     class="form-control text-center me-3"
                                     type="number"
-                                    style="max-width: 3rem"
+                                    style="width: 80px;"
                                     name="quantity"
                                     step="1"
                                     value="1"
                             />
+                            <select class="text-center me-3"
+                                    name="metodePembayaran">
+                                <option th:each="status : ${statusList}" th:text="${status}"></option>
+                            </select>
                             <input type="hidden" name="itemId" th:value="${item.id}"/>
                             <button class="btn btn-outline-dark flex-shrink-0" type="submit">
                                 <i class="bi-cart-fill me-1"></i>
