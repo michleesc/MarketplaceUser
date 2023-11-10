@@ -30,7 +30,6 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.antMatchers("/register/**").permitAll()
                                 .antMatchers("/").permitAll()
-                                .antMatchers("/sales").hasRole("USER")
                                 .antMatchers("/pages/**").hasRole("USER")
                 ).formLogin(
                 form -> form

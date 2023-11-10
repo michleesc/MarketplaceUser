@@ -6,6 +6,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.TextAlignment;
 import comp.finalproject.user.entity.Item;
 import comp.finalproject.user.entity.Sale;
 import comp.finalproject.user.entity.User;
@@ -127,78 +128,53 @@ public class SalesController {
     public void generateNotaPDF(@PathVariable Long id, HttpServletResponse response) {
         Sale sale = salesRepository.findById(id).orElse(null);
 
-        if (sale != null) {
-            try {
-                // Inisialisasi dokumen PDF
-                PdfDocument pdfDocument = new PdfDocument(new PdfWriter(response.getOutputStream()));
-                Document document = new Document(pdfDocument);
-
-                // Setup respons HTTP untuk jenis konten PDF
-                response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition", "inline; filename=nota.pdf");
-
-                // Tambahkan konten ke PDF, sesuai dengan data penjualan
-                Paragraph divider = new Paragraph("=====================");
-                divider.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(divider);
-
-                Paragraph title = new Paragraph("Nota Penjualan");
-                title.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(title);
-
-                Paragraph divider2 = new Paragraph("=====================");
-                divider2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(divider2);
-
-                Paragraph cashierName = new Paragraph("Cashier : " + sale.getUser().getName());
-                cashierName.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(cashierName);
-
-                Paragraph saleId = new Paragraph("ID Penjualan: " + sale.getId());
-                saleId.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(saleId);
-
-                Paragraph date = new Paragraph("Tanggal: " + sale.getDate());
-                date.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(date);
-
-                document.add(divider);
-
-                // ... Tambahkan rincian item, total, dan lainnya ke PDF
-                DecimalFormat decimalFormat = new DecimalFormat("#,##0");
-                String formattedTotal = decimalFormat.format(sale.getSubtotal());
-                String formattedAmount = decimalFormat.format(sale.getItem().getAmount());
-
-                Paragraph itemDetails = new Paragraph(sale.getQuantity() + " " + sale.getItem().getName() + " " + formattedAmount);
-                itemDetails.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(itemDetails);
-
-
-                Paragraph total = new Paragraph("Total : " + formattedTotal);
-                total.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(total);
-
-                document.add(divider);
-
-                // Ucapan Terimakasih
-                Paragraph thankYou = new Paragraph("Thank You!");
-                thankYou.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(thankYou);
-
-                Paragraph pleaseComeAgain = new Paragraph("Please Come Again");
-                pleaseComeAgain.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(pleaseComeAgain);
-
-                // Tutup dokumen
-                document.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (sale == null) {
             // Handle jika penjualan tidak ditemukan
             System.out.println("Gagal menemukan penjualan");
+            return;
+        }
+
+        try {
+            PdfDocument pdfDocument = new PdfDocument(new PdfWriter(response.getOutputStream()));
+            Document document = new Document(pdfDocument);
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "inline; filename=nota.pdf");
+
+            addCenteredText(document, "===========================================");
+            addCenteredText(document, "Nota Penjualan");
+            addCenteredText(document, "===========================================");
+            addCenteredText(document, "Cashier : " + sale.getUser().getName());
+            addCenteredText(document, "ID Penjualan: " + sale.getId() + " Metode Pembayaran: " + sale.getMetodePembayaran());
+            addCenteredText(document, "Tanggal: " + sale.getDate() + " Status: " + sale.getStatus());
+            addCenteredText(document, "===========================================");
+
+            DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+            String formattedTotal = decimalFormat.format(sale.getSubtotal());
+            String formattedAmount = decimalFormat.format(sale.getItem().getAmount());
+
+            addCenteredText(document, sale.getQuantity() + "   " + sale.getItem().getName() + "   " + formattedAmount);
+            addCenteredText(document, "Total                                                                " + formattedTotal);
+            addCenteredText(document, "===========================================");
+
+            addCenteredText(document, "Thank You!");
+            addCenteredText(document, "Please Come Again");
+
+            document.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    private void addCenteredText(Document document, String text) {
+        Paragraph paragraph = new Paragraph(text)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(12); // Sesuaikan dengan ukuran font yang diinginkan
+        document.add(paragraph);
+    }
+
+
+
 
     /*@RequestMapping("/newsales")
     public String showNewForm(Model model) {
