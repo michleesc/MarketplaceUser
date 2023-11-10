@@ -53,7 +53,7 @@
         <nav id="navbar" class="navbar">
             <form th:action="@{/pages/searchsales}" method="get" class="d-flex">
                 <input class="form-control me-2" type="search" name="keyword" th:value="${param.keyword}"
-                       placeholder="Search Transaction">
+                       placeholder="Search Transaction" pattern=".{3,}" title="Minimal 3 karakter" required>
                 <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
                                                                                     style="color:#0b4a8e;"></i></button>
             </form>
@@ -135,7 +135,7 @@
 
                     <!-- Periksa apakah metodePembayaran adalah 'Transfer' -->
                     <a th:if="${sale.metodePembayaran == 'Transfer' && sale.status == 'Success'}"
-                       class="btn btn-outline-secondary mb-3 " data-bs-toggle="modal"
+                       class="btn btn-light mb-3 " data-bs-toggle="modal"
                        th:data-bs-target="'#staticBackdrop-' + ${sale.id}">Melihat Bukti Transfer</a>
 
 
@@ -166,7 +166,7 @@
 
                     <!-- Tambahkan tautan untuk mengunduh nota PDF -->
                     <a th:if="${sale.status == 'Success'}" th:href="@{/nota/{id}(id=${sale.id})}"
-                       class="btn btn-primary" download="nota.pdf">Download Nota</a>
+                       class="btn btn-success" download="nota.pdf">Download Nota</a>
 
                 </div>
                 <form th:if="${sale.status != 'Success'}" novalidate
@@ -192,6 +192,13 @@
                     </div>
                 </form>
             </div>
+            <div th:if="${#lists.isEmpty(userSales)}" class="mt-4">
+                <p class="text-center">
+                    Tidak ada hasil untuk pencarian &quot; <span th:text="${param.keyword}"></span> &quot;.
+                </p>
+            </div>
+
+
         </section>
     </div>
 

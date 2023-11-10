@@ -52,7 +52,7 @@
         <nav id="navbar" class="navbar">
             <form th:action="@{/pages}" method="get" class="d-flex">
                 <input class="form-control me-2" type="search" name="keyword" th:value="${param.keyword}"
-                       placeholder="Search Item">
+                        placeholder="Search Item" pattern=".{3,}" title="Minimal 3 karakter" required>
                 <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
                                                                                     style="color:#0b4a8e;"></i></button>
             </form>
@@ -130,7 +130,9 @@
                     </div>
                 </div>
                 <div th:if="${#lists.isEmpty(listItem)}" class="mt-4">
-                    <p class="text-center">Tidak ada hasil pencarian yang cocok.</p>
+                    <p class="text-center">
+                        Tidak ada hasil untuk pencarian &quot; <span th:text="${param.keyword}"></span> &quot;.
+                    </p>
                 </div>
             </div>
         </div>

@@ -51,10 +51,12 @@
 
         <nav id="navbar" class="navbar">
             <form th:action="@{/pages}" method="get" class="d-flex">
-                <input class="form-control me-2" type="search" name="keyword" placeholder="Search Item">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search Item" pattern=".{3,}"
+                       title="Kata kunci minimal 3 karakter" required>
                 <button type="submit" class="btn" style="border-color: #0b4a8e;"><i class="bi bi-search"
                                                                                     style="color:#0b4a8e;"></i></button>
             </form>
+
             <ul>
                 <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
