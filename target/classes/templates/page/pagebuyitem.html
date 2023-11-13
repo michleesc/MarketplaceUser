@@ -134,6 +134,10 @@
                                     name="quantity"
                                     step="1"
                                     value="1"
+                                    min="1"
+                                    th:max="${item.quantity}"
+                                    title="Pembelian Melebihi Stok"
+                                    required
                             />
                             <select class="text-center me-3"
                                     name="metodePembayaran">

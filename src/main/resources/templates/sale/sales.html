@@ -151,9 +151,9 @@
                                             aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img class="card-img-top" th:src="${sale.proofOfPayment}" alt="Product Image"
-                                         width="450"
-                                         height="300"/>
+                                    <img class="card-img-top" th:src="@{${sale.proofOfPayment}}"
+                                         id="paymentProofImage" alt="Product Image" width="450" height="300"/>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close

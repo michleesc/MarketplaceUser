@@ -93,13 +93,16 @@
 
                                     <div class="col-12">
                                         <label for="yourEmail" class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control" id="yourEmail"
-                                               placeholder="Enter email address" th:field="*{email}"
-                                               required>
-                                        <p th:errors="*{email}" class="text-danger"
-                                           th:if="${#fields.hasErrors('email')}"></p>
-                                        <div class="invalid-feedback">Please enter your email or invalid validation
-                                            email!
+                                        <div class="input-group has-validation">
+                                            <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                            <input type="email" name="email" class="form-control" id="yourEmail"
+                                                   placeholder="Enter email address" th:field="*{email}"
+                                                   required>
+                                            <p th:errors="*{email}" class="text-danger"
+                                               th:if="${#fields.hasErrors('email')}"></p>
+                                            <div class="invalid-feedback">Please enter your email or invalid validation
+                                                email!
+                                            </div>
                                         </div>
                                     </div>
 

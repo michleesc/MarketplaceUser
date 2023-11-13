@@ -3,9 +3,7 @@ package comp.finalproject.user.controller.web;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import comp.finalproject.user.entity.Item;
 import comp.finalproject.user.entity.Sale;
@@ -14,6 +12,10 @@ import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.text.DecimalFormat;
@@ -31,6 +34,7 @@ import java.util.UUID;
 @Controller
 public class SalesController {
 
+    private static final String PAYMENT_IMAGE_DIRECTORY = "C:\\Users\\ASUS\\OneDrive - Microsoft 365\\Documents\\TIA - Academy\\MerdekaFinalProjectMarketplaceUser\\MerdekaFinalProjectMarketplaceUser\\src\\main\\resources\\static\\image\\payment\\";
     @Autowired
     private SalesRepository salesRepository;
     @Autowired
@@ -114,8 +118,11 @@ public class SalesController {
 
             payment.transferTo(new File(filePathUser));
 
+            // Mengganti backslash menjadi slash, dan memasukkan path direktori
+            String imagePathForEndpoint = filePathDatabase.replace("\\", "/");
+
             // Setel path gambar ke model
-            sale.setProofOfPayment(filePathDatabase);
+            sale.setProofOfPayment(imagePathForEndpoint);
             sale.setStatus("Success");
         }
 
@@ -123,6 +130,24 @@ public class SalesController {
 
         return "redirect:/pages/sales";
     }
+
+    @GetMapping("/image/payment/{imageName:.+}")
+    public ResponseEntity<Resource> serveImage(@PathVariable String imageName) throws IOException {
+        Path imagePath = Paths.get(PAYMENT_IMAGE_DIRECTORY + imageName);
+
+        Resource resource = new org.springframework.core.io.FileUrlResource(imagePath.toUri().toURL());
+
+        // Periksa apakah file ada dan dapat diakses
+        if (resource.exists() || resource.isReadable()) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE) // Ganti dengan tipe media yang sesuai
+                    .body(resource);
+        } else {
+            // Gagal menemukan file, kamu dapat mengembalikan contoh gambar default atau respons yang sesuai.
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @GetMapping("/nota/{id}")
     public void generateNotaPDF(@PathVariable Long id, HttpServletResponse response) {

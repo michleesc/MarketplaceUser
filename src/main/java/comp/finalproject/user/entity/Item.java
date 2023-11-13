@@ -1,4 +1,5 @@
 package comp.finalproject.user.entity;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "item")
 public class Item {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,5 +31,11 @@ public class Item {
     @Column(name = "created_at")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm z", timezone = "Asia/Jakarta")
     private Date createdAt = new Date();
+    @Column(name = "deleted_at")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm z", timezone = "Asia/Jakarta")
+    private Date deletedAt;
+    @Column(name = "updated_at")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm z", timezone = "Asia/Jakarta")
+    private Date updatedAt;
     private boolean deleted = false;
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,16 +26,14 @@ public class Sale implements Serializable {
     private User user;
     private int quantity;
     private float subtotal;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-
     private String status;
-
     @Column(name = "metode_pembayaran")
     private String metodePembayaran;
     @Column(name = "proof_of_payment")
     private String proofOfPayment;
+    private boolean deleted = false;
 
     public Sale(Item item, int quantity, float subtotal, Long userId) {
         this.item = item;
