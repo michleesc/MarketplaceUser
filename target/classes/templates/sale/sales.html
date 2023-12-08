@@ -124,7 +124,7 @@
                     <p class="card-title">Total Belanja</p>
                     <p class="card-text d-flex justify-content-between">
                         <!-- Total Belanja -->
-                        <span th:text="'Rp. ' + ${#numbers.formatDecimal(sale.subtotal, 0, 'COMMA', 2, 'POINT')}">Total</span>
+                        <span th:text="'Rp. ' + ${#numbers.formatInteger(sale.subtotal,3,'POINT')}">Total</span>
                         <!-- Batalkan Pesanan -->
                         <a th:if="${sale.status != 'Success'}" th:href="@{/pages/deletesales/__${sale.id}__}"
                            class="btn btn-danger">Batalkan Pesanan</a>
@@ -190,6 +190,11 @@
                         </div>
                     </div>
                 </form>
+            </div>
+            <div th:if="${#lists.size(userSales) == 0 }" class="mt-4">
+                <p class="text-center">
+                    Tidak ada Transaksi
+                </p>
             </div>
         </section>
     </div>

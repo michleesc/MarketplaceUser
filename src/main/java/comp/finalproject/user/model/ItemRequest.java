@@ -1,5 +1,4 @@
-package comp.finalproject.user.dto;
-
+package comp.finalproject.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class ItemRequest {
     private String name;
     private String type;
     private int quantity;

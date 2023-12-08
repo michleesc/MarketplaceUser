@@ -100,14 +100,14 @@
     <!-- Product section-->
     <form action="/purchase" method="post">
         <section class="py-5" th:each="item : ${item}">
-            <div class="container px-4 px-lg-5 my-5">
+            <div class="container">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6">
                         <img
                                 class="card-img-top mb-5 mb-md-0"
                                 th:src="${item.imagePath}"
                                 alt="..."
-                                style="width: 600px; height: 700px;"
+                                style="width: 600px; height: 700px; padding: 20px; margin-right: 101px;"
                         />
                     </div>
                     <div class="col-md-6">
@@ -116,9 +116,9 @@
                             Shop item template
                         </h1>
                         <div class="fs-5 mb-5">
-                            <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span>
+                            <span th:text="'Rp. ' + ${#numbers.formatInteger(item.amount,3,'POINT')}">Total</span>
                         </div>
-                        <p class="lead" th:text="${item.description}">
+                        <p class="lead" style="text-align: justify;" th:text="${item.description}">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit.
                             Praesentium at dolorem quidem modi. Nam sequi consequatur
                             obcaecati excepturi alias magni, accusamus eius blanditiis
@@ -165,15 +165,16 @@
                      th:value="${item.id}">
                     <div class="card h-100">
                         <!-- Product image-->
-                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
-                             height="300"/>
+                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image"
+                             style="width: 100%; height: 300px; padding: 20px"/>
+
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <!-- Product name-->
                                 <h5 class="fw-bolder" th:text="${item.name}">Product Name</h5>
                                 <!-- Product price-->
-                                <span th:text="'Rp. ' + ${#numbers.formatDecimal(item.amount, 0, 'COMMA', 2, 'POINT')}">Total</span></br>
+                                <span th:text="'Rp. ' + ${#numbers.formatInteger(item.amount,3,'POINT')}">Total</span></br>
                                 <!-- Total Sold -->
                                 <span th:text="'Terjual ' + ${item.totalSold}">Total Sold</span>
                             </div>
@@ -181,7 +182,7 @@
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
-                                <form th:action="@{/buyItem/{itemId}(itemId=${item.id})}" method="post">
+                                <form th:action="@{/pages/buyItem/{itemId}(itemId=${item.id})}" method="post">
                                     <button type="submit" class="btn btn-outline-dark mt-auto">Buy Item</button>
                                 </form>
                             </div>
@@ -250,7 +251,7 @@
 <script src="assets3/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
-<script src="assets3/js/main.js"></script>
+<script type="text/javascript" src="assets3/js/main.js"></script>
 
 </body>
 </html>

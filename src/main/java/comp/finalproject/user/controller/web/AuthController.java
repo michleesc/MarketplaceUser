@@ -37,7 +37,7 @@ public class AuthController {
     // handler method to handle home page request
     @GetMapping("/")
     public String home(Model model) {
-        List<Item> listItem = itemRepository.findTop4ByTotalSoldGreaterThanOrderByTotalSoldDesc(0);
+        List<Item> listItem = itemRepository.findTop4ByDeletedFalseAndTotalSoldGreaterThanOrderByTotalSoldDesc(0);
         model.addAttribute("listItem", listItem);
         return "index";
     }

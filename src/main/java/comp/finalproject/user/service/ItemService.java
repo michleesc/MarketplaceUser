@@ -1,7 +1,7 @@
 package comp.finalproject.user.service;
 
-import comp.finalproject.user.dto.ItemDto;
 import comp.finalproject.user.entity.Item;
+import comp.finalproject.user.model.ItemRequest;
 import comp.finalproject.user.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    public ResponseEntity<?> createRequest(ItemDto itemDto) {
+    public ResponseEntity<?> createRequest(ItemRequest itemDto) {
         Item item = new Item();
 
         // Membuat atribute Makanan sesuai data yang diterima
@@ -45,7 +45,7 @@ public class ItemService {
         return new ResponseEntity<>(itemSaved, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<?> editRequest(long id, ItemDto itemDto) {
+    public ResponseEntity<?> editRequest(long id, ItemRequest itemDto) {
         // Temukan objek Makanan berdasarkan ID
         Item item = itemRepository.findById(id);
 

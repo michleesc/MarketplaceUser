@@ -7,10 +7,17 @@ import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,6 +25,7 @@ import java.util.List;
 
 @Controller
 public class PageController {
+    private static final String ITEM_IMAGE_DIRECTORY = "C:\\Users\\ASUS\\OneDrive - Microsoft 365\\Documents\\TIA - Academy\\MerdekaFinalProjectMarketplaceUser\\MerdekaFinalProjectMarketplaceUser\\src\\main\\resources\\static\\image\\item\\";
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -41,7 +49,7 @@ public class PageController {
         model.addAttribute("currentUser", currentUser);
 
         // Mengambil 8 item terbaru berdasarkan ID
-        List<Item> listItem = itemRepository.findTop8ByOrderByIdDesc();
+        List<Item> listItem = itemRepository.findTop8ByDeletedFalseOrderByIdDesc();
 
         model.addAttribute("listItem", listItem);
         return "page/pagenewproduct";
@@ -55,7 +63,7 @@ public class PageController {
         model.addAttribute("currentUser", currentUser);
 
         // Mengambil 8 item terbaru berdasarkan ID
-        List<Item> listItem = itemRepository.findAll();
+        List<Item> listItem = itemRepository.findByDeletedFalseOrderByCreatedAtDesc();
 
         model.addAttribute("listItem", listItem);
         return "page/pageallproduct";
@@ -69,7 +77,7 @@ public class PageController {
         model.addAttribute("currentUser", currentUser);
 
         // Mengambil 8 item terbaru berdasarkan ID
-        List<Item> listItem = itemRepository.findTop8ByTotalSoldGreaterThanOrderByTotalSoldDesc(0);
+        List<Item> listItem = itemRepository.findTop8ByDeletedFalseAndTotalSoldGreaterThanOrderByTotalSoldDesc(0);
 
         model.addAttribute("listItem", listItem);
         return "page/pagepopularitem";
@@ -87,7 +95,7 @@ public class PageController {
         Item item = itemRepository.findById(itemId);
 
         // untuk menampilkan produk terbaru dibawah nya
-        List<Item> listItem = itemRepository.findTop4ByOrderByIdDesc();
+        List<Item> listItem = itemRepository.findTop4ByDeletedFalseOrderByIdDesc();
         model.addAttribute("listItem", listItem);
 
         // Menampilkan informasi pembelian kepada pengguna
@@ -165,5 +173,22 @@ public class PageController {
         }
         model.addAttribute("listItem", items);
         return "page/list";
+    }
+
+    @GetMapping("/image/item/{imageName:.+}")
+    public ResponseEntity<Resource> serveImage(@PathVariable String imageName) throws IOException {
+        Path imagePath = Paths.get(ITEM_IMAGE_DIRECTORY + imageName);
+
+        Resource resource = new org.springframework.core.io.FileUrlResource(imagePath.toUri().toURL());
+
+        // Periksa apakah file ada dan dapat diakses
+        if (resource.exists() || resource.isReadable()) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE) // Ganti dengan tipe media yang sesuai
+                    .body(resource);
+        } else {
+            // Gagal menemukan file, kamu dapat mengembalikan contoh gambar default atau respons yang sesuai.
+            return ResponseEntity.notFound().build();
+        }
     }
 }

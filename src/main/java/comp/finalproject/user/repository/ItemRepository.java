@@ -9,14 +9,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAll();
     List<Item> findByNameContaining(String keyword);
     Item findById(long id);
-    List<Item> findTop8ByOrderByIdDesc();
-    List<Item> findTop4ByOrderByIdDesc();
-    // Menampilkan semua product
-    List<Item> findByTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
-    // Menampilkan 8 product saja
-    List<Item> findTop8ByTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
-    List<Item> findTop4ByTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
-
+    List<Item> findTop8ByDeletedFalseOrderByIdDesc();
+    List<Item> findTop4ByDeletedFalseOrderByIdDesc();
+    List<Item> findTop8ByDeletedFalseAndTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
+    List<Item> findTop4ByDeletedFalseAndTotalSoldGreaterThanOrderByTotalSoldDesc(int totalSold);
     List<Item> findByDeletedFalseOrderByCreatedAtDesc();
-
 }

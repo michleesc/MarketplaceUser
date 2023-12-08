@@ -1,7 +1,7 @@
 package comp.finalproject.user.controller.api;
 
-import comp.finalproject.user.dto.ItemDto;
 import comp.finalproject.user.entity.Item;
+import comp.finalproject.user.model.ItemRequest;
 import comp.finalproject.user.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +26,13 @@ public class ItemController {
     }
 
     @PostMapping("/item")
-    public ResponseEntity<?> create(@RequestBody ItemDto itemDto) {
-        return itemService.createRequest(itemDto);
+    public ResponseEntity<?> create(@RequestBody ItemRequest item) {
+        return itemService.createRequest(item);
     }
 
     @PutMapping("/item/{id}")
-    public ResponseEntity<?> edit(@RequestBody ItemDto itemDto, @PathVariable long id) {
-        return itemService.editRequest(id, itemDto);
+    public ResponseEntity<?> edit(@RequestBody ItemRequest item, @PathVariable long id) {
+        return itemService.editRequest(id, item);
     }
 
     @DeleteMapping("/makanan/{id}")

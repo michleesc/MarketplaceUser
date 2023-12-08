@@ -83,7 +83,9 @@ public class SalesController {
     }
 
     @GetMapping("/pages/searchsales")
-    public String searchSalesByItemName(Model model, @RequestParam(name = "keyword", required = false) String itemName, Principal principal) {
+    public String searchSalesByItemName(Model model,
+                                        @RequestParam(name = "keyword", required = false) String itemName,
+                                        Principal principal) {
         List<Sale> sales;
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
