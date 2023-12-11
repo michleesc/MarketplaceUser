@@ -44,7 +44,17 @@ public class AuthController {
 
     // handler method to handle login request
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model,
+                        @RequestParam(name = "error", required = false) String error,
+                        @RequestParam(name = "logout", required = false) String logout) {
+
+        if (error != null) {
+            model.addAttribute("error", "Email atau kata sandi salah");
+        }
+
+        if (logout != null) {
+            model.addAttribute("message", "Berhasil keluar");
+        }
         return "auth/login";
     }
 
