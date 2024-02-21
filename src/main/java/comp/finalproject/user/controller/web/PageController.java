@@ -7,6 +7,7 @@ import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,7 +26,8 @@ import java.util.List;
 
 @Controller
 public class PageController {
-    private static final String ITEM_IMAGE_DIRECTORY = "C:\\Users\\ASUS\\OneDrive - Microsoft 365\\Documents\\TIA - Academy\\MerdekaFinalProjectMarketplaceUser\\MerdekaFinalProjectMarketplaceUser\\src\\main\\resources\\static\\image\\item\\";
+    @Value("${get.image.item}")
+    private String getItemImage;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -177,7 +179,7 @@ public class PageController {
 
     @GetMapping("/image/item/{imageName:.+}")
     public ResponseEntity<Resource> serveImage(@PathVariable String imageName) throws IOException {
-        Path imagePath = Paths.get(ITEM_IMAGE_DIRECTORY + imageName);
+        Path imagePath = Paths.get(getItemImage + imageName);
 
         Resource resource = new org.springframework.core.io.FileUrlResource(imagePath.toUri().toURL());
 

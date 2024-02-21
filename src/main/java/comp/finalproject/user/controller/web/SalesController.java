@@ -12,6 +12,7 @@ import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,7 +35,8 @@ import java.util.UUID;
 @Controller
 public class SalesController {
 
-    private static final String PAYMENT_IMAGE_DIRECTORY = "C:\\Users\\ASUS\\OneDrive - Microsoft 365\\Documents\\TIA - Academy\\MerdekaFinalProjectMarketplaceUser\\MerdekaFinalProjectMarketplaceUser\\src\\main\\resources\\static\\image\\payment\\";
+    @Value("${upload.image.item}")
+    private String uploadItemImage;
     @Autowired
     private SalesRepository salesRepository;
     @Autowired
@@ -110,12 +112,11 @@ public class SalesController {
             // Simpan gambar ke server atau lakukan operasi lain sesuai kebutuhan Anda
             String fileName = UUID.randomUUID().toString() + "-" + payment.getOriginalFilename();
             // Mengupload file ke user
-            String uploadDirUser = "C:\\Users\\ASUS\\OneDrive - Microsoft 365\\Documents\\TIA - Academy\\MerdekaFinalProjectMarketplaceUser\\MerdekaFinalProjectMarketplaceUser\\src\\main\\resources\\static\\image\\payment";
 
             // Mengupload path ke database
             String uploadDatabase = "/image/payment/";
 
-            String filePathUser = Paths.get(uploadDirUser, fileName).toString(); // user
+            String filePathUser = Paths.get(uploadItemImage, fileName).toString(); // user
             String filePathDatabase = Paths.get(uploadDatabase, fileName).toString(); // database
 
             payment.transferTo(new File(filePathUser));
@@ -135,7 +136,7 @@ public class SalesController {
 
     @GetMapping("/image/payment/{imageName:.+}")
     public ResponseEntity<Resource> serveImage(@PathVariable String imageName) throws IOException {
-        Path imagePath = Paths.get(PAYMENT_IMAGE_DIRECTORY + imageName);
+        Path imagePath = Paths.get(uploadItemImage + imageName);
 
         Resource resource = new org.springframework.core.io.FileUrlResource(imagePath.toUri().toURL());
 
@@ -166,7 +167,7 @@ public class SalesController {
             Document document = new Document(pdfDocument);
 
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "inline; filename=nota.pdf");
+            response.setHeader("Content-Disposition", "inline; filename=nota" + sale.getId() + ".pdf");
 
             addCenteredText(document, "===========================================");
             addCenteredText(document, "Nota Penjualan");

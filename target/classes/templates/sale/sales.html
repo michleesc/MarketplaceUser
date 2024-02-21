@@ -164,7 +164,7 @@
                     </div>
 
                     <!-- Tambahkan tautan untuk mengunduh nota PDF -->
-                    <a th:if="${sale.status == 'Success'}" th:href="@{/nota/{id}(id=${sale.id})}"
+                    <a th:if="${sale.status == 'Success'}" th:href="@{/laporanPdf}"
                        class="btn btn-success" download="nota.pdf">Download Nota</a>
 
                 </div>
