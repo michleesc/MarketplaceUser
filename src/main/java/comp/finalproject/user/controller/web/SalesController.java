@@ -29,6 +29,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -169,12 +173,19 @@ public class SalesController {
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "inline; filename=nota" + sale.getId() + ".pdf");
 
+            // Format tanggal
+            Date date = sale.getDate();
+            LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            String formattedDate = localDateTime.format(formatter);
+
             addCenteredText(document, "===========================================");
             addCenteredText(document, "Nota Penjualan");
             addCenteredText(document, "===========================================");
             addCenteredText(document, "Cashier : " + sale.getUser().getName());
             addCenteredText(document, "ID Penjualan: " + sale.getId() + " Metode Pembayaran: " + sale.getMetodePembayaran());
-            addCenteredText(document, "Tanggal: " + sale.getDate() + " Status: " + sale.getStatus());
+            addCenteredText(document, "Tanggal: " + formattedDate + " Status: " + sale.getStatus());
             addCenteredText(document, "===========================================");
 
             DecimalFormat decimalFormat = new DecimalFormat("#,##0");
