@@ -34,13 +34,11 @@ public class PageController {
     private ItemRepository itemRepository;
     @Autowired
     private SalesRepository salesRepository;
-
     public PageController(UserRepository userRepository, ItemRepository itemRepository, SalesRepository salesRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.salesRepository = salesRepository;
     }
-
 
     // handler method to handle pages after login
     @GetMapping("/pages/newproduct")
@@ -110,6 +108,7 @@ public class PageController {
     @PostMapping("/purchase")
     public String purchaseItem(@RequestParam("itemId") long itemId, @RequestParam("quantity") int quantity,
                                @RequestParam("metodePembayaran") String metodePembayaran,
+                               @RequestParam(value = "cashInput", required = false) Float cashInput,
                                Principal principal, Model model) {
         // Mendapatkan informasi pengguna yang sedang login
         String email = principal.getName();
@@ -123,15 +122,30 @@ public class PageController {
             // Kurangi jumlah quantity yang tersedia
             item.setQuantity(item.getQuantity() - quantity);
             item.setTotalSold(item.getTotalSold() + quantity);
-            itemRepository.save(item);
 
             // Menghitung subtotal berdasarkan harga barang dan jumlah yang dipilih
             float subtotal = item.getAmount() * quantity;
 
-            // Membuat objek Sale baru berdasarkan barang yang dibeli dan jumlah yang dipilih
+            Float change;
+            // jika cashInput sama dengan null
+            if (cashInput == null) {
+                System.out.println("Received cashInput is null");
+                cashInput = 0.0f;
+                change = 0.0f;
+            } else { // jika tidak null
+                change = cashInput - subtotal;
+            }
+            // Menghitung change
+            System.out.println(cashInput);
+            System.out.println(change);
 
-            Sale sale = new Sale(item, quantity, subtotal, currentUser.getId());
+            // Membuat objek Sale baru berdasarkan barang yang dibeli dan jumlah yang dipilih
+            Sale sale = new Sale(item, quantity, cashInput, change, subtotal, currentUser.getId());
             sale.setDate(new Date());
+
+            // Mengaitkan sale dengan pengguna yang sedang login
+            currentUser.getSales().add(sale);
+
             if (metodePembayaran.equals("Cash")) {
                 sale.setMetodePembayaran("Cash");
                 sale.setStatus("Success");
@@ -140,11 +154,9 @@ public class PageController {
                 sale.setStatus("Menunggu");
             }
 
-            // Mengaitkan sale dengan pengguna yang sedang login
-            currentUser.getSales().add(sale);
-
-            // Menyimpan perubahan pada pengguna
+            // Menyimpan perubahan pada penjualan
             salesRepository.save(sale);
+            itemRepository.save(item);
 
             // Menampilkan informasi pembelian kepada pengguna
             model.addAttribute("currentUser", currentUser);

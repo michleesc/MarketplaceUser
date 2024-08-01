@@ -69,7 +69,6 @@ public class SalesController {
         return "sale/sales";
     }
 
-
     @RequestMapping("/pages/deletesales/{id}")
     public String delete(@PathVariable(name = "id") long id) {
         Sale sale = salesRepository.findById(id);
@@ -155,11 +154,9 @@ public class SalesController {
         }
     }
 
-
     @GetMapping("/nota/{id}")
-    public void generateNotaPDF(@PathVariable Long id, HttpServletResponse response) {
+    public void generateNotaPDFCash(@PathVariable Long id, HttpServletResponse response) {
         Sale sale = salesRepository.findById(id).orElse(null);
-
         if (sale == null) {
             // Handle jika penjualan tidak ditemukan
             System.out.println("Gagal menemukan penjualan");
@@ -196,6 +193,13 @@ public class SalesController {
             addCenteredText(document, "Total                                                                " + formattedTotal);
             addCenteredText(document, "===========================================");
 
+            if (sale.getMetodePembayaran().equals("Cash")) {
+                if (sale.getCashInput() != null && sale.getChangePayment() != null) {
+                    addCenteredText(document, "Cash Paid                                                                " + decimalFormat.format(sale.getCashInput()));
+                    addCenteredText(document, "Change                                                                " + decimalFormat.format(sale.getChangePayment()));
+                    addCenteredText(document, "===========================================");
+                }
+            }
             addCenteredText(document, "Thank You!");
             addCenteredText(document, "Please Come Again");
 

@@ -18,7 +18,7 @@ public class Sale implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "id_item",referencedColumnName = "id")
+    @JoinColumn(name = "id_item", referencedColumnName = "id")
     private Item item;
     @ManyToOne
     @JoinColumn(name = "id_user")
@@ -33,11 +33,17 @@ public class Sale implements Serializable {
     private String metodePembayaran;
     @Column(name = "proof_of_payment")
     private String proofOfPayment;
+    @Column(name = "cash_input")
+    private Float cashInput;
+    @Column(name = "change_payment")
+    private Float changePayment;
     private boolean deleted = false;
 
-    public Sale(Item item, int quantity, float subtotal, Long userId) {
+    public Sale(Item item, int quantity, Float cashInput, Float changePayment, float subtotal, Long userId) {
         this.item = item;
         this.quantity = quantity;
+        this.cashInput = cashInput;
+        this.changePayment = changePayment;
         this.subtotal = subtotal;
         this.user = new User();
         this.user.setId(userId);

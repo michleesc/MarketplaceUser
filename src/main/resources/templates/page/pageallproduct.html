@@ -44,7 +44,7 @@
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
             <a th:href="@{/pages/newproduct}"><img src="/assets3/img/logo.png" alt=""
-                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
+                                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
         </div>
         <div id="navbar" class="navbar">
             <form th:action="@{/pages}" method="get" class="d-flex">
@@ -102,7 +102,7 @@
                 <div class="col mb-5" th:each="item : ${listItem}" th:value="${item.id}">
                     <div class="card h-100">
                         <!-- Product image-->
-                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image"
+                        <img class="card-img-top img-fluid" th:src="@{${item.imagePath}}" alt="Product Image"
                              style="width: 100%; height: 300px; padding: 20px"/>
                         <!-- Product details-->
                         <div class="card-body p-4">
@@ -136,14 +136,14 @@
 <footer id="footer">
     <div class="footer-top">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 footer-info" style="text-align: justify;">
-                    <h2>Mulia Tetap Jaya</h2>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-lg-4 col-md-6 footer-info" style="text-align: center;">
+                    <h2>CV Mulia Tetap Jaya</h2>
                     <p class="text-justify">
-                        Selamat datang di Mulia Tetap Jaya, platform marketplace terdepan untuk semua kebutuhan ponsel dan gadget Anda! Kami adalah sebuah tim yang berdedikasi untuk menyediakan pengalaman berbelanja online yang terbaik dalam industri teknologi, dengan fokus utama pada produk-produk berkualitas tinggi dan layanan pelanggan yang unggul.
+
                     </p>
                 </div>
-                <div class="social-links">
+                <div class="social-links d-flex justify-content-center align-items-center">
                     <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                     <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
                     <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>

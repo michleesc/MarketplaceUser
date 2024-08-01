@@ -168,7 +168,7 @@
                      th:value="${item.id}">
                     <div class="card h-100">
                         <!-- Product image-->
-                        <img class="card-img-top" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
+                        <img class="card-img-top img-fluid" th:src="@{${item.imagePath}}" alt="Product Image" width="450"
                              height="300"/>
                         <!-- Product details-->
                         <div class="card-body p-4">
@@ -199,14 +199,14 @@
 <footer id="footer">
     <div class="footer-top">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 footer-info" style="text-align: justify;">
-                    <h2>Mulia Tetap Jaya</h2>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-lg-4 col-md-6 footer-info" style="text-align: center;">
+                    <h2>CV Mulia Tetap Jaya</h2>
                     <p class="text-justify">
-                        Selamat datang di Mulia Tetap Jaya, platform marketplace terdepan untuk semua kebutuhan ponsel dan gadget Anda! Kami adalah sebuah tim yang berdedikasi untuk menyediakan pengalaman berbelanja online yang terbaik dalam industri teknologi, dengan fokus utama pada produk-produk berkualitas tinggi dan layanan pelanggan yang unggul.
+
                     </p>
                 </div>
-                <div class="social-links">
+                <div class="social-links d-flex justify-content-center align-items-center">
                     <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                     <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
                     <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
@@ -232,6 +232,7 @@
     </div>
 </footer>
 <!-- End Footer -->
+
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
     <i class="bi bi-arrow-up-short"></i>
 </a>

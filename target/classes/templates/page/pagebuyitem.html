@@ -34,6 +34,7 @@
     * Author: BootstrapMade.com
     * License: https://bootstrapmade.com/license/
     ======================================================== -->
+
 </head>
 
 <body>
@@ -45,7 +46,7 @@
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
             <a th:href="@{/pages/newproduct}"><img src="/assets3/img/logo.png" alt=""
-                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
+                                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
         </div>
         <div id="navbar" class="navbar">
             <form th:action="@{/pages}" method="get" class="d-flex">
@@ -124,33 +125,136 @@
                             delectus ipsam minima ea iste laborum vero?
                         </p>
                         <p class="lead" th:text="'Stok : ' + ${item.quantity}"></p>
-
-                        <div class="d-flex">
+                        <div class="" style="padding-bottom:20px;">
+                            <p class="d-flex align-items-center">
+                                <span class="me-2">Jenis pembayaran :</span>
+                                <select class="text-center me-3"
+                                        style="width:120px;"
+                                        name="metodePembayaran"
+                                        id="metodePembayaran">
+                                    <option th:each="status : ${statusList}" th:text="${status}"
+                                            th:value="${status}"></option>
+                                </select>
+                            </p>
+                            <input type="hidden" name="itemId" th:value="${item.id}"/>
+                            <div class="d-flex">
+                                <input
+                                        class="form-control text-center me-3"
+                                        type="number"
+                                        style="width: 80px;"
+                                        id="quantity"
+                                        name="quantity"
+                                        step="1"
+                                        value="1"
+                                        min="1"
+                                        th:max="${item.quantity}"
+                                        oninput="calculateSubtotal()"
+                                        required
+                                />
+                                <span
+                                        class="text-center me-3 my-auto"
+                                >X</span>
+                                <input
+                                        id="itemPrice"
+                                        type="text"
+                                        style="width: 150px;"
+                                        class="form-control text-center me-3"
+                                        th:value="${item.amount}"
+                                        required
+                                        readonly
+                                />
+                            </div>
+                        </div>
+                        <div style="padding-bottom:20px;">
                             <input
                                     class="form-control text-center me-3"
-                                    type="number"
-                                    style="width: 80px;"
-                                    name="quantity"
-                                    step="1"
-                                    value="1"
-                                    min="1"
-                                    th:max="${item.quantity}"
-                                    title="Pembelian Melebihi Stok"
+                                    type="text"
+                                    style="width: 270px;"
+                                    id="subtotal"
                                     required
+                                    readonly
                             />
+                        </div>
+                        <a class="btn btn-outline-dark flex-shrink-0 " style="width: 270px"
+                           data-bs-toggle="modal"
+                           onclick="showSelectedModal()"><i class="bi-cart-fill me-1"></i>Buy
+                        </a>
 
-                            <select class="text-center me-3"
-                                    name="metodePembayaran">
-                                <option th:each="status : ${statusList}" th:text="${status}"></option>
-                            </select>
-                            <input type="hidden" name="itemId" th:value="${item.id}"/>
-                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                                <i class="bi-cart-fill me-1"></i>
-                                Buy
-                            </button>
+                        <!-- Modal untuk pembayaran cash -->
+                        <div th:id="staticBackdropCash"
+                             class="modal fade" id="staticBackdropCash" data-bs-backdrop="static"
+                             data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabelCash" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabelCash">Payment methods</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="d-flex justify-content-between">
+                                            <span id="quantityDetail">Total Harga (1 Barang)</span>
+                                            <span id="totalHarga"></span>
+                                        </div>
+                                        <div id="cashInputContainer"
+                                             class="d-flex justify-content-between">
+                                            <span>Cash</span>
+                                            <input type="text" id="cashInput" name="cashInput" style="width: 100px;"
+                                                   placeholder="Rp"
+                                                   oninput="calculateChange()">
+                                        </div>
+                                        <div id="changeContainer"
+                                             class="d-flex justify-content-between">
+                                            <span>Change</span>
+                                            <span id="change" name="change">Rp0</span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button class="btn btn-outline-dark flex-shrink-0" style="width: 180px"
+                                                type="submit" id="buyButtonCash" disabled>
+                                            <i class="bi-cart-fill me-1"></i>
+                                            Buy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal untuk pembayaran Transfer -->
+                    <div th:id="staticBackdropTransfer"
+                         class="modal fade" id="staticBackdropTransfer" data-bs-backdrop="static"
+                         data-bs-keyboard="false"
+                         tabindex="-1" aria-labelledby="staticBackdropLabelTransfer" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabelTransfer">Payment methods</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex justify-content-between">
+                                        <span id="quantityDetailTransfer">Total Harga (1 Barang)</span>
+                                        <span id="totalHargaTransfer"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <button class="btn btn-outline-dark flex-shrink-0" style="width: 180px"
+                                            type="submit" id="buyButtonTransfer" disabled>
+                                        <i class="bi-cart-fill me-1"></i>
+                                        Buy
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
     </form>
@@ -196,14 +300,14 @@
 <footer id="footer">
     <div class="footer-top">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 footer-info" style="text-align: justify;">
-                    <h2>Mulia Tetap Jaya</h2>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-lg-4 col-md-6 footer-info" style="text-align: center;">
+                    <h2>CV Mulia Tetap Jaya</h2>
                     <p class="text-justify">
-                        Selamat datang di Mulia Tetap Jaya, platform marketplace terdepan untuk semua kebutuhan ponsel dan gadget Anda! Kami adalah sebuah tim yang berdedikasi untuk menyediakan pengalaman berbelanja online yang terbaik dalam industri teknologi, dengan fokus utama pada produk-produk berkualitas tinggi dan layanan pelanggan yang unggul.
+
                     </p>
                 </div>
-                <div class="social-links">
+                <div class="social-links d-flex justify-content-center align-items-center">
                     <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                     <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
                     <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
@@ -234,16 +338,97 @@
         class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="assets3/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="assets3/vendor/aos/aos.js"></script>
-<script src="assets3/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets3/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="assets3/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="assets3/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="assets3/vendor/php-email-form/validate.js"></script>
+<script src="/assets3/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/assets3/vendor/aos/aos.js"></script>
+<script src="/assets3/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets3/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/assets3/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/assets3/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/assets3/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
 <script src="/assets3/js/main.js"></script>
+<script th:inline="javascript">
 
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    }
+
+    function calculateSubtotal() {
+        var quantity = document.getElementById('quantity').value;
+        var itemPrice = document.getElementById('itemPrice').value;
+        var subtotal = quantity * itemPrice;
+        document.getElementById('subtotal').value = 'Rp ' + formatNumber(subtotal);
+        document.getElementById('totalHarga').innerText = 'Rp ' + formatNumber(subtotal);
+        document.getElementById('totalHargaTransfer').innerText = 'Rp ' + formatNumber(subtotal);
+        document.getElementById('quantityDetail').innerText = 'Total Harga (' + quantity + ' Barang)';
+        document.getElementById('quantityDetailTransfer').innerText = 'Total Harga (' + quantity + ' Barang)';
+    }
+
+    let timeoutId;
+
+    function calculateChange() {
+        clearTimeout(timeoutId); // Clear previous timeout
+
+        timeoutId = setTimeout(() => {
+            const subtotal = parseFloat(document.getElementById('subtotal').value.replace(/[^\d]/g, ''));
+            const cashInput = parseFloat(document.getElementById('cashInput').value.replace(/[^\d]/g, ''));
+            const changeElement = document.getElementById('change');
+
+            if (isNaN(subtotal) || isNaN(cashInput)) {
+                changeElement.innerText = 'Rp0';
+                buyButtonCash.disabled = true;
+                return;
+            }
+
+            if (cashInput < subtotal) {
+                alert("Jumlah cash tidak cukup untuk membayar total harga");
+                changeElement.innerText = 'Rp0';
+                document.getElementById('buyButtonCash').disabled = true; // Disable Buy button
+                return;
+            }
+
+            const change = cashInput - subtotal;
+            document.getElementById('change').innerText = 'Rp ' + formatNumber(change);
+            document.getElementById('buyButtonCash').disabled = false; // Enable Buy button
+        }, 500); // Delay in milliseconds
+    }
+
+
+    // Event listener for modal close
+    document.getElementById('staticBackdropCash').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('cashInput').value = '';
+        document.getElementById('change').innerText = 'Rp0';
+        document.getElementById('buyButtonCash').disabled = true; // Disable Buy button
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateSubtotal();
+        calculateChange();
+    });
+
+    function showSelectedModal() {
+        var selectedMethod = document.getElementById('metodePembayaran').value;
+
+        if (selectedMethod === 'Cash') {
+            var cashModal = new bootstrap.Modal(document.getElementById('staticBackdropCash'));
+            cashModal.show();
+        } else if (selectedMethod === 'Transfer') {
+            var transferModal = new bootstrap.Modal(document.getElementById('staticBackdropTransfer'));
+            document.getElementById('buyButtonTransfer').disabled = false; // Enable Buy button
+            transferModal.show();
+        }
+    }
+
+
+
+
+
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
