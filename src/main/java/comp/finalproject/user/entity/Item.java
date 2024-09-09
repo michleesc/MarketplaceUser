@@ -18,7 +18,7 @@ import java.util.Date;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private String type;
     private int quantity;

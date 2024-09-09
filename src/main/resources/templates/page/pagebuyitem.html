@@ -211,13 +211,49 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button class="btn btn-outline-dark flex-shrink-0" style="width: 180px"
-                                                type="submit" id="buyButtonCash" disabled>
-                                            <i class="bi-cart-fill me-1"></i>
-                                            Buy
-                                        </button>
+                                        <div class="w-100 mb-3">
+                                            <div class="d-flex mb-2">
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1"
+                                                        onclick="addCash(500)">500
+                                                </button>
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                        onclick="addCash(1000)">1.000
+                                                </button>
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                        onclick="addCash(2000)">2.000
+                                                </button>
+                                            </div>
+                                            <div class="d-flex mb-2">
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1"
+                                                        onclick="addCash(5000)">5.000
+                                                </button>
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                        onclick="addCash(10000)">10.000
+                                                </button>
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                        onclick="addCash(20000)">20.000
+                                                </button>
+                                            </div>
+                                            <div class="d-flex mb-2">
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1"
+                                                        onclick="addCash(50000)">50.000
+                                                </button>
+                                                <button type="button" class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                        onclick="addCash(100000)">100.000
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="w-100 text-end">
+                                            <button type="button" class="btn btn-secondary me-2"
+                                                    data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button class="btn btn-outline-dark flex-shrink-0" style="width: 180px"
+                                                    type="submit" id="buyButtonCash" disabled>
+                                                <i class="bi-cart-fill me-1"></i>
+                                                Buy
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -349,6 +385,12 @@
 <!-- Template Main JS File -->
 <script src="/assets3/js/main.js"></script>
 <script th:inline="javascript">
+    function addCash(amount) {
+            var cashInput = document.getElementById("cashInput");
+            var currentValue = parseInt(cashInput.value.replace(/[^\d]/g, '')) || 0;
+            cashInput.value = currentValue + amount;
+            calculateChange(); // Call this function to update the change
+    }
 
     function formatNumber(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
@@ -368,31 +410,30 @@
     let timeoutId;
 
     function calculateChange() {
-        clearTimeout(timeoutId); // Clear previous timeout
+        const subtotal = parseFloat(document.getElementById('subtotal').value.replace(/[^\d]/g, ''));
+        const cashInput = parseFloat(document.getElementById('cashInput').value.replace(/[^\d]/g, ''));
+        const changeElement = document.getElementById('change');
 
-        timeoutId = setTimeout(() => {
-            const subtotal = parseFloat(document.getElementById('subtotal').value.replace(/[^\d]/g, ''));
-            const cashInput = parseFloat(document.getElementById('cashInput').value.replace(/[^\d]/g, ''));
-            const changeElement = document.getElementById('change');
+        if (isNaN(subtotal) || isNaN(cashInput)) {
+            changeElement.innerText = 'Rp0';
+            return;
+        }
 
-            if (isNaN(subtotal) || isNaN(cashInput)) {
-                changeElement.innerText = 'Rp0';
-                buyButtonCash.disabled = true;
-                return;
-            }
+        if (cashInput < subtotal) {
+            alert("Jumlah cash tidak cukup untuk membayar total harga");
+            changeElement.innerText = 'Rp0';
+            return;
+        }
 
-            if (cashInput < subtotal) {
-                alert("Jumlah cash tidak cukup untuk membayar total harga");
-                changeElement.innerText = 'Rp0';
-                document.getElementById('buyButtonCash').disabled = true; // Disable Buy button
-                return;
-            }
+        const change = cashInput - subtotal;
+        changeElement.innerText = 'Rp ' + formatNumber(change);
+        }
 
-            const change = cashInput - subtotal;
-            document.getElementById('change').innerText = 'Rp ' + formatNumber(change);
-            document.getElementById('buyButtonCash').disabled = false; // Enable Buy button
-        }, 500); // Delay in milliseconds
-    }
+        document.getElementById('cashInput').addEventListener('input', calculateChange);
+
+        // Simulasi subtotal input
+        document.getElementById('subtotal').value = '10000'; // Contoh nilai
+    });
 
 
     // Event listener for modal close
@@ -419,13 +460,6 @@
             transferModal.show();
         }
     }
-
-
-
-
-
-
-
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

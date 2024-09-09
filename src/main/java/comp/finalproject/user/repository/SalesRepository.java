@@ -12,11 +12,8 @@ public interface SalesRepository extends JpaRepository<Sale, Long> {
     List<Sale> findAll();
     List<Sale> findByUserId(long userId);
     Sale findById(long id);
-
     List<Sale> findByUserIdOrderByIdDesc(long userId);
-
-    List<Sale> findByUser_IdAndItem_NameContainingOrderByIdDesc(Long userId, String itemName);
-
+    List<Sale> findByIdInOrderByIdDesc(List<Long> saleIds);
 
     /*int deleteById(int id);
 

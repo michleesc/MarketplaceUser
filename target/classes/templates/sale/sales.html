@@ -27,6 +27,14 @@
     <!-- Template Main CSS File -->
     <link href="/assets3/css/style.css" rel="stylesheet">
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <!-- =======================================================
     * Template Name: NewBiz
     * Updated: May 30 2023 with Bootstrap v5.3.0
@@ -45,7 +53,7 @@
             <!-- Uncomment below if you prefer to use an text logo -->
             <!-- <h1><a href="index.html">NewBiz</a></h1> -->
             <a th:href="@{/pages/newproduct}"><img src="/assets3/img/logo.png" alt=""
-                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
+                                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
         </div>
         <div id="navbar" class="navbar">
             <form th:action="@{/pages/searchsales}" method="get" class="d-flex">
@@ -57,8 +65,14 @@
         </div>
         <div class="d-flex justify-content-end">
             <ul class="d-flex">
-                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
+                <li><a class="nav-link scrollto" th:href="@{/pages/newproduct}">Home</a></li>
                 <li><a class="nav-link scrollto" href="#footer">About</a></li>
+                <li><a class="nav-link scrollto" th:href="@{/pages/cart}">Cart</a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:text="${userCarts.size()}">
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </li>
                 <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
                     <ul>
                         <li><a th:href="@{/pages/newproduct}">New Product</a></li>
@@ -101,7 +115,8 @@
         <section class="d-flex justify-content-center align-items-center row mb-3 mt-4">
             <div class="card w-75 mb-3" th:each="sale : ${userSales}">
                 <!-- Tanggal -->
-                <h5 th:text="${#dates.format(sale.date, 'dd-MM-yyyy HH:mm:ss')}" class="card-header d-flex justify-content-between align-items-center">
+                <h5 th:text="${#dates.format(sale.date, 'dd-MM-yyyy HH:mm:ss')}"
+                    class="card-header d-flex justify-content-between align-items-center">
                     Tanggal
                 </h5>
                 <!-- Status -->
@@ -112,20 +127,28 @@
 
                     <div class="d-flex">
                         <!-- Gambar -->
-                        <img th:src="@{${sale.item.imagePath}}" alt="Gambar" class="me-3"
+                        <img th:src="@{${firstSaleItemBySaleId.get(sale.id).item.imagePath}}" alt="Gambar" class="me-3"
                              style="width: 100px; height: 100px;">
                         <div class="me-2">
                             <!-- Item Name -->
-                            <h5 th:text="${sale.item.name}" class="card-title">Name</h5>
+                            <h5 th:text="${firstSaleItemBySaleId.get(sale.id).item.name}" class="card-title">Name</h5>
                             <!-- Total Item -->
-                            <p th:text="${sale.quantity} + ' item'" class="card-text mb-1">Item</p>
+                            <p class="card-text mb-1">
+                                <span th:text="${saleItemsBySaleId.get(sale.id).size()} + ' Jenis Item'"></span>
+                                <a th:if="${saleItemsBySaleId.get(sale.id).size() > 1}"
+                                   class="ms-2 text-decoration-none text-primary"
+                                   th:data-bs-toggle="modal"
+                                   th:data-bs-target="'#detailModal-' + ${sale.id}">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                            </p>
                             <p class="card-title" th:text="'Metode Pembayaran : ' + ${sale.metodePembayaran}"></p>
                         </div>
                     </div>
                     <p class="card-title">Total Belanja</p>
                     <p class="card-text d-flex justify-content-between">
                         <!-- Total Belanja -->
-                        <span th:text="'Rp. ' + ${#numbers.formatInteger(sale.subtotal,3,'POINT')}">Total</span>
+                        <span th:text="'Rp. ' + ${#numbers.formatInteger(sale.total,3,'POINT')}">Total</span>
                         <!-- Batalkan Pesanan -->
                         <a th:if="${sale.status != 'Success'}" th:href="@{/pages/deletesales/__${sale.id}__}"
                            class="btn btn-danger">Batalkan Pesanan</a>
@@ -138,9 +161,64 @@
                        class="btn btn-light mb-3 " data-bs-toggle="modal"
                        th:data-bs-target="'#staticBackdrop-' + ${sale.id}">Melihat Bukti Transfer</a>
 
+                    <!-- Modal untuk menampilkan detail produk -->
+                    <div class="modal fade" th:id="'detailModal-' + ${sale.id}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" th:text="'Detail Produk untuk Sale ID: ' + ${sale.id}"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>ID Produk</th>
+                                            <th>Gambar</th>
+                                            <th>Nama Produk</th>
+                                            <th>Kuantitas</th>
+                                            <th>Harga</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="item : ${saleItemsBySaleId.get(sale.id)}">
+                                            <!-- Gambar Produk -->
+                                            <!-- ID Produk -->
+                                            <td th:text="${item.item.id}">ID Produk</td>
+                                            <td>
+                                                <img th:src="@{${item.item.imagePath}}" alt="Gambar Produk"
+                                                     style="width: 50px; height: 50px;">
+                                            </td>
+                                            <!-- Nama Produk -->
+                                            <td th:text="${item.item.name}">Nama Produk</td>
+                                            <!-- Kuantitas -->
+                                            <td th:text="${item.quantity}">Kuantitas</td>
+                                            <!-- Harga -->
+                                            <td th:text="'Rp. ' + ${#numbers.formatInteger(item.price,3,'POINT')}">
+                                                Harga
+                                            </td>
+                                            <td th:text="'Rp. ' + ${#numbers.formatInteger(item.quantity * item.price,3,'POINT')}">
+                                                Subtotal
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <span class="fw-bold d-flex justify-content-end" th:text="'Rp. ' + ${#numbers.formatInteger(sale.total,3,'POINT')}">Total</span>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-end">
+                                    <!-- Tombol berada di sebelah kanan -->
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Modal -->
-                    <div th:each="sale : ${userSales}" th:id="'staticBackdrop-' + ${sale.id}"
+                    <div th:each="sale : ${userSaleItems}" th:id="'staticBackdrop-' + ${sale.sale.id}"
                          class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
                          data-bs-keyboard="false"
                          tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -152,7 +230,7 @@
                                             aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img class="card-img-top" th:src="@{${sale.proofOfPayment}}"
+                                    <img class="card-img-top" th:src="@{${sale.sale.proofOfPayment}}"
                                          id="paymentProofImage" alt="Product Image" width="450" height="300"/>
 
                                 </div>
@@ -191,7 +269,7 @@
                     </div>
                 </form>
             </div>
-            <div th:if="${#lists.size(userSales) == 0 }" class="mt-4">
+            <div th:if="${#lists.size(userSaleItems) == 0 }" class="mt-4">
                 <p class="text-center">
                     Tidak ada Transaksi
                 </p>

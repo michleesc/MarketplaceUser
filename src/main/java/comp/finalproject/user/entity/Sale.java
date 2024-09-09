@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,15 +18,10 @@ public class Sale implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "id_item", referencedColumnName = "id")
-    private Item item;
     @ManyToOne
     @JoinColumn(name = "id_user")
     @JsonIgnoreProperties("sales")
     private User user;
-    private int quantity;
-    private float subtotal;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private String status;
@@ -38,13 +34,19 @@ public class Sale implements Serializable {
     @Column(name = "change_payment")
     private Float changePayment;
     private boolean deleted = false;
+    private Float total;
 
-    public Sale(Item item, int quantity, Float cashInput, Float changePayment, float subtotal, Long userId) {
-        this.item = item;
-        this.quantity = quantity;
+    public Sale(Float cashInput, Float changePayment, float subtotal, Long userId) {
         this.cashInput = cashInput;
         this.changePayment = changePayment;
-        this.subtotal = subtotal;
+        this.user = new User();
+        this.user.setId(userId);
+    }
+
+    public Sale(Float cashInput, Float changePayment, Float total, Long userId) {
+        this.cashInput = cashInput;
+        this.changePayment = changePayment;
+        this.total = total;
         this.user = new User();
         this.user.setId(userId);
     }

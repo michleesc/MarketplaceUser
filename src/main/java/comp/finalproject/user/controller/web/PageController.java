@@ -1,11 +1,11 @@
 package comp.finalproject.user.controller.web;
 
-import comp.finalproject.user.entity.Item;
-import comp.finalproject.user.entity.Sale;
-import comp.finalproject.user.entity.User;
+import comp.finalproject.user.entity.*;
 import comp.finalproject.user.repository.ItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
+import comp.finalproject.user.service.CartItemService;
+import comp.finalproject.user.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -34,6 +34,8 @@ public class PageController {
     private ItemRepository itemRepository;
     @Autowired
     private SalesRepository salesRepository;
+    @Autowired
+    private CartItemService cartItemService;
     public PageController(UserRepository userRepository, ItemRepository itemRepository, SalesRepository salesRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
@@ -45,8 +47,14 @@ public class PageController {
     public String pagesNewProduct(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+
+        List<CartItem> userCartItems = cartItemService.findByUserId(currentUser.getId());
+
         // Menyimpan pengguna yang sedang login dalam model
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("user", user);
+        model.addAttribute("userCarts", userCartItems);
 
         // Mengambil 8 item terbaru berdasarkan ID
         List<Item> listItem = itemRepository.findTop8ByDeletedFalseOrderByIdDesc();
@@ -59,6 +67,10 @@ public class PageController {
     public String pagesAllProduct(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+
+        List<CartItem> userCarts = cartItemService.findByUserId(currentUser.getId());
+
         // Menyimpan pengguna yang sedang login dalam model
         model.addAttribute("currentUser", currentUser);
 
@@ -66,6 +78,8 @@ public class PageController {
         List<Item> listItem = itemRepository.findByDeletedFalseOrderByCreatedAtDesc();
 
         model.addAttribute("listItem", listItem);
+        model.addAttribute("user", user);
+        model.addAttribute("userCarts", userCarts);
         return "page/pageallproduct";
     }
 
@@ -73,13 +87,19 @@ public class PageController {
     public String pagesPopularItem(Model model, Principal principal) {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+
+        List<CartItem> userCarts = cartItemService.findByUserId(currentUser.getId());
+
         // Menyimpan pengguna yang sedang login dalam model
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("user", user);
 
         // Mengambil 8 item terbaru berdasarkan ID
         List<Item> listItem = itemRepository.findTop8ByDeletedFalseAndTotalSoldGreaterThanOrderByTotalSoldDesc(0);
 
         model.addAttribute("listItem", listItem);
+        model.addAttribute("userCarts", userCarts);
         return "page/pagepopularitem";
     }
 
@@ -140,7 +160,7 @@ public class PageController {
             System.out.println(change);
 
             // Membuat objek Sale baru berdasarkan barang yang dibeli dan jumlah yang dipilih
-            Sale sale = new Sale(item, quantity, cashInput, change, subtotal, currentUser.getId());
+            Sale sale = new Sale(cashInput, change, subtotal, currentUser.getId());
             sale.setDate(new Date());
 
             // Mengaitkan sale dengan pengguna yang sedang login
@@ -177,6 +197,9 @@ public class PageController {
         List<Item> items;
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
+
+        List<CartItem> userCarts = cartItemService.findByUserId(currentUser.getId());
+
         // Menyimpan pengguna yang sedang login dalam model
         model.addAttribute("currentUser", currentUser);
 
@@ -186,6 +209,8 @@ public class PageController {
             items = itemRepository.findAll();
         }
         model.addAttribute("listItem", items);
+        model.addAttribute("userCarts", userCarts);
+
         return "page/list";
     }
 

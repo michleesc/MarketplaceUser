@@ -3,14 +3,19 @@ package comp.finalproject.user.controller.web;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
-import comp.finalproject.user.entity.Item;
-import comp.finalproject.user.entity.Sale;
-import comp.finalproject.user.entity.User;
+import comp.finalproject.user.entity.*;
 import comp.finalproject.user.repository.ItemRepository;
+import comp.finalproject.user.repository.SaleItemRepository;
 import comp.finalproject.user.repository.SalesRepository;
 import comp.finalproject.user.repository.UserRepository;
+import comp.finalproject.user.service.CartItemService;
+import comp.finalproject.user.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -18,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,9 +38,8 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class SalesController {
@@ -47,6 +52,11 @@ public class SalesController {
     private UserRepository userRepository;
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private SaleItemRepository saleItemRepository;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     public SalesController(SalesRepository salesRepository, UserRepository userRepository, ItemRepository itemRepository) {
         this.salesRepository = salesRepository;
@@ -61,29 +71,60 @@ public class SalesController {
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
 
+        // menampilkan size dari cart
+        List<CartItem> userCartItems = cartItemService.findByUserId(currentUser.getId());
+
+        // Mendapatkan semua Sales untuk pengguna
         List<Sale> userSales = salesRepository.findByUserIdOrderByIdDesc(currentUser.getId());
+
+        // Mendapatkan semua SaleItems untuk setiap Sale
+        List<SaleItem> userSaleItems = saleItemRepository.findBySaleUserId(currentUser.getId());
+
+        // Mengelompokkan SaleItem berdasarkan sale_id
+        Map<Long, List<SaleItem>> saleItemsBySaleId = userSaleItems.stream()
+                .collect(Collectors.groupingBy(saleItem -> saleItem.getSale().getId()));
+
+        // Mengambil produk pertama dari setiap transaksi
+        Map<Long, SaleItem> firstSaleItemBySaleId = saleItemsBySaleId.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().get(0)  // Ambil produk pertama dari setiap transaksi
+                ));
+
 
         model.addAttribute("userSales", userSales);
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("saleItemsBySaleId", saleItemsBySaleId);
+        model.addAttribute("userSaleItems", userSaleItems);
+        model.addAttribute("firstSaleItemBySaleId", firstSaleItemBySaleId);
+        model.addAttribute("userCarts", userCartItems);
 
         return "sale/sales";
     }
 
     @RequestMapping("/pages/deletesales/{id}")
+    @Transactional
     public String delete(@PathVariable(name = "id") long id) {
-        Sale sale = salesRepository.findById(id);
-        if (sale != null) {
-            // Mengembalikan total_sold dan quantity item ke nilai semula
-            Item item = sale.getItem();
-            int quantity = sale.getQuantity();
+        // Temukan semua SaleItem yang terkait dengan saleId
+        List<SaleItem> saleItems = saleItemRepository.findBySaleId(id);
 
+        // Perbarui stok item dan total terjual
+        for (SaleItem saleItem : saleItems) {
+            Item item = saleItem.getItem();
+            int quantity = saleItem.getQuantity();
+
+            // Mengembalikan total_sold dan quantity item ke nilai semula
             item.setTotalSold(item.getTotalSold() - quantity);
             item.setQuantity(item.getQuantity() + quantity);
             itemRepository.save(item);
-
-            // Menghapus penjualan dari repository
-            salesRepository.deleteById(id);
         }
+
+        // Hapus semua SaleItem terkait
+        saleItemRepository.deleteBySaleId(id);
+
+        // Hapus penjualan dari repository
+        salesRepository.deleteById(id);
+
         return "redirect:/pages/sales";
     }
 
@@ -91,21 +132,44 @@ public class SalesController {
     public String searchSalesByItemName(Model model,
                                         @RequestParam(name = "keyword", required = false) String itemName,
                                         Principal principal) {
-        List<Sale> sales;
         String email = principal.getName();
         User currentUser = userRepository.findByEmail(email);
-        model.addAttribute("currentUser", currentUser);
-        if (itemName != null && !itemName.isEmpty()) {
-            // Lakukan pencarian berdasarkan nama barang
-            sales = salesRepository.findByUser_IdAndItem_NameContainingOrderByIdDesc(currentUser.getId(), itemName);
 
+        // Mendapatkan semua SaleItems untuk setiap Sale
+        List<SaleItem> userSaleItems = saleItemRepository.findBySaleUserId(currentUser.getId());
+
+        // Mengelompokkan SaleItem berdasarkan sale_id
+        Map<Long, List<SaleItem>> saleItemsBySaleId = userSaleItems.stream()
+                .collect(Collectors.groupingBy(saleItem -> saleItem.getSale().getId()));
+
+        // Mengambil produk pertama dari setiap transaksi
+        Map<Long, SaleItem> firstSaleItemBySaleId = saleItemsBySaleId.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().get(0)  // Ambil produk pertama dari setiap transaksi
+                ));
+
+        List<Sale> sales;
+        if (itemName != null && !itemName.isEmpty()) {
+            // Lakukan pencarian berdasarkan nama item pertama dari setiap transaksi
+            List<Long> saleIdsWithMatchingItems = firstSaleItemBySaleId.values().stream()
+                    .filter(saleItem -> saleItem.getItem().getName().toLowerCase().contains(itemName.toLowerCase()))
+                    .map(saleItem -> saleItem.getSale().getId())
+                    .collect(Collectors.toList());
+
+            sales = salesRepository.findByIdInOrderByIdDesc(saleIdsWithMatchingItems);
         } else {
             // Tampilkan semua penjualan jika tidak ada kata kunci pencarian
-            sales = salesRepository.findAll();
+            sales = salesRepository.findByUserIdOrderByIdDesc(currentUser.getId());
         }
+        model.addAttribute("firstSaleItemBySaleId", firstSaleItemBySaleId);
+        model.addAttribute("saleItemsBySaleId", saleItemsBySaleId);
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("userSales", sales); // Menambahkan hasil pencarian ke model
+        model.addAttribute("userCarts", cartItemService.findByUserId(currentUser.getId()));
         return "sale/listsales"; // Nama tampilan Thymeleaf yang akan ditampilkan
     }
+
 
     @RequestMapping(value = "/savepayment", method = RequestMethod.POST)
     public String savePayment(@RequestParam("payment") MultipartFile payment,
@@ -156,12 +220,16 @@ public class SalesController {
 
     @GetMapping("/nota/{id}")
     public void generateNotaPDFCash(@PathVariable Long id, HttpServletResponse response) {
+        // Mendapatkan penjualan berdasarkan ID
         Sale sale = salesRepository.findById(id).orElse(null);
         if (sale == null) {
             // Handle jika penjualan tidak ditemukan
             System.out.println("Gagal menemukan penjualan");
             return;
         }
+
+        // Mendapatkan semua SaleItems untuk Sale ini
+        List<SaleItem> saleItems = saleItemRepository.findBySaleId(id);
 
         try {
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(response.getOutputStream()));
@@ -173,10 +241,10 @@ public class SalesController {
             // Format tanggal
             Date date = sale.getDate();
             LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             String formattedDate = localDateTime.format(formatter);
 
+            // Tambahkan informasi penjualan
             addCenteredText(document, "===========================================");
             addCenteredText(document, "Nota Penjualan");
             addCenteredText(document, "===========================================");
@@ -185,21 +253,94 @@ public class SalesController {
             addCenteredText(document, "Tanggal: " + formattedDate + " Status: " + sale.getStatus());
             addCenteredText(document, "===========================================");
 
+            // Format decimal
             DecimalFormat decimalFormat = new DecimalFormat("#,##0");
-            String formattedTotal = decimalFormat.format(sale.getSubtotal());
-            String formattedAmount = decimalFormat.format(sale.getItem().getAmount());
 
-            addCenteredText(document, sale.getQuantity() + "   " + sale.getItem().getName() + "   " + formattedAmount);
-            addCenteredText(document, "Total                                                                " + formattedTotal);
+            // Buat tabel borderless untuk item
+            Table table = new Table(new float[]{1, 4, 2, 2}); // Lebar kolom: No, Item Name, Quantity, Subtotal
+            table.setBorder(Border.NO_BORDER);
+
+            // Tambahkan header tabel tanpa border
+            table.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("No")));
+            table.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Item Name")));
+            table.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Quantity")));
+            table.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Subtotal")));
+
+            // Tambahkan baris untuk setiap SaleItem
+            int index = 1;
+            for (SaleItem saleItem : saleItems) {
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(index++))));
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(saleItem.getItem().getName())));
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(saleItem.getQuantity())).setTextAlignment(TextAlignment.CENTER)));
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(decimalFormat.format(saleItem.getPrice() * saleItem.getQuantity())).setTextAlignment(TextAlignment.RIGHT)));
+            }
+
+            // Atur alignment tabel ke tengah
+            table.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            // Tambahkan tabel item ke dokumen
+            document.add(table);
+
+            // Cetak total harga
+            Table tableTotalHarga = new Table(new float[]{1, 2}); // Lebar kolom: Label, Value
+            tableTotalHarga.setBorder(Border.NO_BORDER);
+
+            // Tambahkan sel untuk Total
+            Cell totalLabelCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Total                                                  "));
+            Cell totalValueCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(decimalFormat.format(sale.getTotal())));
+
+            // Set alignment untuk label dan nilai
+            totalLabelCell.setTextAlignment(TextAlignment.LEFT);
+            totalValueCell.setTextAlignment(TextAlignment.RIGHT);
+
+            // Tambahkan sel ke tabel
+            tableTotalHarga.addCell(totalLabelCell);
+            tableTotalHarga.addCell(totalValueCell);
+
+            // Atur alignment tabel ke tengah
+            tableTotalHarga.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            // Tambahkan tabel total harga ke dokumen
             addCenteredText(document, "===========================================");
+            document.add(tableTotalHarga);
 
+            // Jika metode pembayaran adalah Cash, cetak input cash dan kembalian
             if (sale.getMetodePembayaran().equals("Cash")) {
                 if (sale.getCashInput() != null && sale.getChangePayment() != null) {
-                    addCenteredText(document, "Cash Paid                                                                " + decimalFormat.format(sale.getCashInput()));
-                    addCenteredText(document, "Change                                                                " + decimalFormat.format(sale.getChangePayment()));
                     addCenteredText(document, "===========================================");
+                    Table tableCashInfo = new Table(new float[]{1, 2}); // Lebar kolom: Label, Value
+                    tableCashInfo.setBorder(Border.NO_BORDER);
+
+                    // Tambahkan sel untuk Cash Paid dan Change
+                    Cell cashPaidLabelCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Cash Paid                                          "));
+                    Cell cashPaidValueCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(decimalFormat.format(sale.getCashInput())));
+
+                    Cell changeLabelCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Change                                          "));
+                    Cell changeValueCell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(decimalFormat.format(sale.getChangePayment())));
+
+                    // Set alignment untuk label dan nilai
+                    cashPaidLabelCell.setTextAlignment(TextAlignment.LEFT);
+                    cashPaidValueCell.setTextAlignment(TextAlignment.RIGHT);
+
+                    changeLabelCell.setTextAlignment(TextAlignment.LEFT);
+                    changeValueCell.setTextAlignment(TextAlignment.RIGHT);
+
+                    // Tambahkan sel ke tabel
+                    tableCashInfo.addCell(cashPaidLabelCell);
+                    tableCashInfo.addCell(cashPaidValueCell);
+
+                    tableCashInfo.addCell(changeLabelCell);
+                    tableCashInfo.addCell(changeValueCell);
+
+                    // Atur alignment tabel ke tengah
+                    tableCashInfo.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+                    // Tambahkan tabel cash info ke dokumen
+                    document.add(tableCashInfo);
                 }
             }
+
+            addCenteredText(document, "===========================================");
             addCenteredText(document, "Thank You!");
             addCenteredText(document, "Please Come Again");
 
@@ -211,10 +352,11 @@ public class SalesController {
 
     private void addCenteredText(Document document, String text) {
         Paragraph paragraph = new Paragraph(text)
-                .setTextAlignment(TextAlignment.CENTER)
-                .setFontSize(12); // Sesuaikan dengan ukuran font yang diinginkan
+                .setTextAlignment(TextAlignment.CENTER);
         document.add(paragraph);
     }
+
+
 
 
 

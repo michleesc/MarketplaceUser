@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Cart - Mulia Tetap Jaya STORE </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets3/img/favicon.png" rel="icon">
+    <link href="/assets3/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/assets3/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/assets3/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets3/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets3/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/assets3/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="/assets3/css/style.css" rel="stylesheet">
+
+    <!-- Bootstrap JS (disertakan setelah jQuery jika digunakan) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</head>
+
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container navbar navbar-expand-md d-flex justify-content-between">
+        <div class="logo">
+            <a th:href="@{/pages/newproduct}"><img src="/assets3/img/logo.png" alt=""
+                                                   class="img-fluid me-3"/><span> Mulia Tetap Jaya STORE </span></a>
+        </div>
+        <div class="d-flex justify-content-end">
+            <ul class="d-flex">
+                <li><a class="nav-link scrollto " th:href="@{/pages/newproduct}">Home</a></li>
+                <li><a class="nav-link scrollto" href="#footer">About</a></li>
+                <li><a class="nav-link scrollto" th:href="@{/pages/cart}">Cart</a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:text="${userCarts.size()}">
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </li>
+                <li class="dropdown"><a href="#"><span>Shop</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a th:href="@{/pages/newproduct}">New Product</a></li>
+                        <li><a th:href="@{/pages/popularitem}">Popular Item</a></li>
+                        <li><a th:href="@{/pages/allproduct}">All Product</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="#"><span th:text="${currentUser.name}">Name</span> <i
+                        class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a th:href="@{/pages/sales}">Transaction</a></li>
+                        <li><a th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </div>
+        <!-- .navbar -->
+    </div>
+</header>
+<!-- #header -->
+
+<main id="main">
+
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Cart</h2>
+                <ol>
+                    <li><a th:href="@{/pages}">Pages</a></li>
+                    <li>Cart</li>
+                </ol>
+            </div>
+        </div>
+    </section><!-- End Breadcrumbs Section -->
+
+    <form action="/purchaseCart" method="post">
+        <section class="h-100 h-custom" style="background-color: #ffffff;">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12">
+                        <div class="card card-registration card-registration-2"
+                             style="border-radius: 15px; background-color: #d3d3d3;">
+                            <div class="card-body p-0">
+                                <div class="row g-0">
+                                    <div class="col-lg-8">
+                                        <div class="p-5">
+                                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                                <h1 class="fw-bold mb-0">Shopping Cart</h1>
+                                                <h6 class="mb-0 text-muted"><span th:text="${userCarts.size()}"></span>
+                                                    items</h6>
+                                            </div>
+                                            <!-- Periksa jika userCarts kosong -->
+                                            <div th:if="${#lists.size(userCarts) == 0}" class="mt-4">
+                                                <p class="text-center">
+                                                    Tidak ada produk di keranjang.
+                                                </p>
+                                            </div>
+                                            <hr class="my-4">
+                                            <div th:each="cart : ${userCarts}"
+                                                 class="row mb-4 d-flex justify-content-between align-items-center">
+                                                <!-- Hidden input fields for cart id and item id -->
+                                                <input type="hidden" name="cartId" th:value="${cart.id}" />
+                                                <input type="hidden" name="itemId" th:value="${cart.item.id}" />
+                                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                                    <img th:src="@{${cart.item.imagePath}}" class="img-fluid rounded-3"
+                                                         alt="Cotton T-shirt">
+                                                </div>
+                                                <div class="col-md-3 col-lg-3 col-xl-3">
+                                                    <h6 class="text-muted" th:text="${cart.item.type}">Product Type</h6>
+                                                    <h6 class="mb-0" th:text="${cart.item.name}">Product Name</h6>
+                                                    <h6 th:id="'item-stock-' + ${cart.id}" class="mb-0"
+                                                        th:text="'Stok:  '+ ${cart.item.quantity}">Stock</h6>
+                                                    <br>
+                                                    <h6 th:id="'item-amount-' + ${cart.id}" class="mb-0 fw-bold"
+                                                        th:text="${#numbers.formatInteger(cart.item.amount,3,'POINT')}">
+                                                        Item
+                                                        Amount</h6>
+                                                </div>
+                                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                                    <input min="0" name="quantity" th:value="${cart.quantity}"
+                                                           type="number"
+                                                           th:id="'quantity-' + ${cart.id}"
+                                                           class="form-control form-control-sm"
+                                                           data-subtotal-id="'subtotal-' + ${cart.id}'"/>
+                                                </div>
+                                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                                    <h6 name="subtotal" class="mb-0 fw-bold" th:id="'subtotal-' + ${cart.id}"
+                                                        th:text="${#numbers.formatInteger(cart.subtotal,3,'POINT')}">
+                                                        subtotal</h6>
+                                                </div>
+                                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                                    <a th:href="@{/pages/deletecarts/{id}(id=${cart.id})}"
+                                                       class="text-muted">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                                <!-- Input hidden untuk ID Cart -->
+                                                <input type="hidden" name="cartIds" th:value="${cart.id}"/>
+                                            </div>
+
+                                            </hr>
+                                            <hr class="my-4">
+
+                                            <div class="pt-5">
+                                                <h6 class="mb-0"><a th:href="@{/pages/newproduct}" class="text-body"><i
+                                                        class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 bg-body-tertiary">
+                                        <div class="p-5">
+                                            <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                                            <hr class="my-4">
+
+                                            <div class="d-flex justify-content-between mb-4">
+                                                <h5 class="text-uppercase">items <span
+                                                        th:text="${userCarts.size()}"></span>
+                                                </h5>
+                                            </div>
+
+                                            <h5 class="text-uppercase mb-3">Payment Methods</h5>
+
+                                            <div class="mb-4 pb-2">
+                                                <select class="text-center me-3"
+                                                        style="width:270px;"
+                                                        name="metodePembayaran"
+                                                        id="metodePembayaran">
+                                                    <option th:each="status : ${statusList}" th:text="${status}"
+                                                            th:value="${status}"></option>
+                                                </select>
+                                            </div>
+
+                                            <hr class="my-4">
+
+                                            <div class="d-flex justify-content-between mb-5">
+                                                <h5 class="text-uppercase">Total price</h5>
+                                                <h5 class="fw-bold" id="totalPrice"
+                                                    th:text="'Rp. ' + ${#numbers.formatInteger(totalPrice,3,'POINT')}"></h5>
+                                            </div>
+
+                                            <a class="btn btn-outline-dark flex-shrink-0" style="width: 270px"
+                                               data-bs-toggle="modal"
+                                               onclick="showSelectedModal()">
+                                                <i class="bi-cart-fill me-1"></i> Process Transaction
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal untuk pembayaran cash -->
+                                    <div class="modal fade" id="staticBackdropCash" data-bs-backdrop="static"
+                                         data-bs-keyboard="false" tabindex="-1"
+                                         aria-labelledby="staticBackdropLabelCash"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabelCash">Payment
+                                                        methods</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="d-flex justify-content-between">
+                                                    <span id="quantityDetail" th:with="quantity=${userCarts.size()}"
+                                                          th:text="'Total Harga (' + ${quantity} + ' Barang)'"/>
+                                                        <span id="totalPriceCash"></span>
+                                                    </div>
+                                                    <div id="cashInputContainer" class="d-flex justify-content-between">
+                                                        <span>Cash</span>
+                                                        <input type="text" id="cashInput" name="cashInput"
+                                                               style="width: 100px;" placeholder="Rp"
+                                                               oninput="calculateChange()">
+                                                    </div>
+                                                    <div id="changeContainer" class="d-flex justify-content-between">
+                                                        <span>Change</span>
+                                                        <span id="change" name="change">Rp0</span>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="w-100 mb-3">
+                                                        <div class="d-flex mb-2">
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1"
+                                                                    onclick="addCash(500)">500
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                                    onclick="addCash(1000)">1.000
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                                    onclick="addCash(2000)">2.000
+                                                            </button>
+                                                        </div>
+                                                        <div class="d-flex mb-2">
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1"
+                                                                    onclick="addCash(5000)">5.000
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                                    onclick="addCash(10000)">10.000
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                                    onclick="addCash(20000)">20.000
+                                                            </button>
+                                                        </div>
+                                                        <div class="d-flex mb-2">
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1"
+                                                                    onclick="addCash(50000)">50.000
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-outline-dark flex-grow-1 ms-2"
+                                                                    onclick="addCash(100000)">100.000
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="w-100 text-end">
+                                                        <button type="button" class="btn btn-secondary me-2"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button class="btn btn-outline-dark flex-shrink-0"
+                                                                style="width: 180px" type="submit" id="buyButtonCash"
+                                                                disabled>
+                                                            <i class="bi-cart-fill me-1"></i> Buy
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal untuk pembayaran Transfer -->
+                                    <div class="modal fade" id="staticBackdropTransfer" data-bs-backdrop="static"
+                                         data-bs-keyboard="false" tabindex="-1"
+                                         aria-labelledby="staticBackdropLabelTransfer" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabelTransfer">Payment
+                                                        methods</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="d-flex justify-content-between">
+                                                    <span id="quantityDetailTransfer"
+                                                          th:with="quantity=${userCarts.size()}"
+                                                          th:text="'Total Harga (' + ${quantity} + ' Barang)'"/>
+                                                        <span id="totalPriceTransfer"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button class="btn btn-outline-dark flex-shrink-0"
+                                                            style="width: 180px"
+                                                            type="submit" id="buyButtonTransfer" disabled>
+                                                        <i class="bi-cart-fill me-1"></i> Buy
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="footer-top">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-lg-4 col-md-6 footer-info" style="text-align: center;">
+                    <h2>CV Mulia Tetap Jaya</h2>
+                    <p class="text-justify">
+
+                    </p>
+                </div>
+                <div class="social-links d-flex justify-content-center align-items-center">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="container">
+        <div class="copyright">
+            &copy;2024 Copyright <strong>MTJ</strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            <!--
+          All the links in the footer should remain intact.
+          You can delete the links only if you purchased the pro version.
+          Licensing information: https://bootstrapmade.com/license/
+          Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=NewBiz
+        -->
+        </div>
+    </div>
+</footer>
+<!-- End Footer -->
+
+<!-- Vendor JS Files -->
+<script src="/assets3/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/assets3/vendor/aos/aos.js"></script>
+<script src="/assets3/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets3/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/assets3/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/assets3/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/assets3/vendor/php-email-form/validate.js"></script>
+
+
+<!-- Template Main JS File -->
+<script src="/assets3/js/main.js"></script>
+<script th:inline="javascript">
+    // Tambah jumlah cash dan perbarui change
+    function addCash(amount) {
+        var cashInput = document.getElementById("cashInput");
+        var currentValue = parseInt(cashInput.value.replace(/[^\d]/g, '')) || 0;
+        cashInput.value = currentValue + amount;
+        calculateChange();
+    }
+
+    let timeoutId; // Pastikan variabel timeoutId sudah dideklarasikan di luar fungsi
+
+    function calculateChange() {
+        clearTimeout(timeoutId); // Menghentikan timeout sebelumnya jika ada
+        console.log('calculateChange() dipanggil');
+
+        timeoutId = setTimeout(() => {
+            const totalPrice = parseInt(document.getElementById('totalPriceCash').innerText.replace(/\D/g, ''));
+            const cashInput = parseInt(document.getElementById('cashInput').value.replace(/\D/g, '')) || 0;
+
+            // Validasi apakah totalPrice dan cashInput adalah angka
+            if (isNaN(totalPrice) || isNaN(cashInput)) {
+                document.getElementById('change').innerText = 'Rp0';
+                document.getElementById('buyButtonCash').disabled = true;
+                return;
+            }
+
+            // Jika cash kurang dari totalPrice, beri peringatan dan nonaktifkan tombol "Buy"
+            if (cashInput < totalPrice) {
+                alert("Jumlah cash tidak cukup untuk membayar total harga");
+                document.getElementById('change').innerText = 'Rp0';
+                document.getElementById('buyButtonCash').disabled = true;
+                return;
+            }
+
+            // Menghitung kembalian
+            const change = cashInput - totalPrice;
+
+            // Menampilkan kembalian dalam format rupiah
+            document.getElementById('change').innerText = 'Rp' + change.toLocaleString('id-ID');
+
+            // Mengaktifkan tombol "Buy" karena uang cukup
+            document.getElementById('buyButtonCash').disabled = false;
+        }, 500); // Waktu tunggu 500ms untuk menunggu input user selesai
+    }
+
+    // Fungsi formatNumber untuk menambahkan pemisah ribuan
+    function formatNumber(number) {
+        return number.toLocaleString('id-ID');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Format angka dengan pemisah ribuan sesuai lokal Indonesia
+        function formatNumber(number) {
+            return number.toLocaleString('id-ID');
+        }
+
+        // Hitung subtotal dan update elemen terkait
+        function calculateSubtotal() {
+            var quantity = document.getElementById('quantityDetail').getAttribute('data-quantity');
+            var itemPrice = document.getElementById('itemPrice').value;
+            var subtotal = quantity * itemPrice;
+
+            document.getElementById('subtotal').value = 'Rp ' + formatNumber(subtotal);
+            document.getElementById('totalHarga').innerText = 'Rp ' + formatNumber(totalPrice);
+            document.getElementById('totalHargaTransfer').innerText = 'Rp ' + formatNumber(totalPrice);
+            document.getElementById('quantityDetail').innerText = 'Total Harga (' + quantity + ' Barang)';
+            document.getElementById('quantityDetailTransfer').innerText = 'Total Harga (' + quantity + ' Barang)';
+        }
+
+        // Event listener untuk menutup modal
+        document.getElementById('staticBackdropCash').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('cashInput').value = '';
+            document.getElementById('change').innerText = 'Rp0';
+            document.getElementById('buyButtonCash').disabled = true;
+        });
+
+        // Tampilkan modal sesuai dengan metode pembayaran yang dipilih
+        window.showSelectedModal = function() {
+            var selectedMethod = document.getElementById('metodePembayaran').value;
+
+            if (selectedMethod === 'Cash') {
+                var cashModal = new bootstrap.Modal(document.getElementById('staticBackdropCash'));
+                cashModal.show();
+            } else if (selectedMethod === 'Transfer') {
+                var transferModal = new bootstrap.Modal(document.getElementById('staticBackdropTransfer'));
+                document.getElementById('buyButtonTransfer').disabled = false;
+                transferModal.show();
+            }
+        }
+
+        // Parse string angka dan hapus karakter non-digit
+        function parseNumber(numberString) {
+            return parseFloat(numberString.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        }
+
+        // Update total price dari elemen subtotal
+        function updateTotalPrice() {
+            var subtotalElements = document.querySelectorAll('[id^="subtotal-"]');
+            var totalPrice = 0;
+
+            subtotalElements.forEach(function (element) {
+                var subtotal = parseNumber(element.textContent);
+                totalPrice += subtotal;
+            });
+
+            var totalPriceElement = document.getElementById('totalPrice');
+            var totalPriceCashElement = document.getElementById('totalPriceCash');
+            var totalPriceTransferElement = document.getElementById('totalPriceTransfer');
+
+            if (totalPriceElement) {
+            totalPriceElement.textContent = 'Rp. ' + formatNumber(totalPrice);
+            totalPriceCashElement.textContent = 'Rp. ' + formatNumber(totalPrice);
+            totalPriceTransferElement.textContent = 'Rp. ' + formatNumber(totalPrice);
+            } else {
+                console.error('Element totalPrice tidak ditemukan');
+            }
+        }
+
+        // Setel nilai maksimum quantity berdasarkan stok
+        function setMaxQuantity() {
+            var quantityInputs = document.querySelectorAll('input[name="quantity"]');
+
+            quantityInputs.forEach(function (input) {
+                var cartId = input.id.split('-')[1];
+                var stockElement = document.getElementById(`item-stock-${cartId}`);
+                var stock = parseNumber(stockElement.textContent) || 0;
+
+                input.setAttribute('max', stock);
+
+                if (parseInt(input.value) > stock) {
+                    input.value = stock;
+                    updateSubtotal(cartId);
+                }
+            });
+        }
+
+        // Update subtotal untuk item tertentu
+        function updateSubtotal(cartId) {
+            var quantityInput = document.getElementById(`quantity-${cartId}`);
+            var quantity = parseInt(quantityInput.value) || 0;
+
+            var amountElement = document.getElementById(`item-amount-${cartId}`);
+            var amount = parseNumber(amountElement.textContent) || 0;
+
+            var subtotal = quantity * amount;
+            var subtotalElement = document.getElementById(`subtotal-${cartId}`);
+
+            if (subtotalElement) {
+                subtotalElement.textContent = formatNumber(subtotal);
+            }
+
+            updateTotalPrice();
+        }
+
+        // Event listener pada setiap input quantity
+        var quantityInputs = document.querySelectorAll('input[name="quantity"]');
+
+        quantityInputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                var cartId = this.id.split('-')[1];
+                updateSubtotal(cartId);
+            });
+        });
+
+        // Setel nilai maksimum quantity saat halaman dimuat
+        setMaxQuantity();
+        updateTotalPrice();
+    });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
